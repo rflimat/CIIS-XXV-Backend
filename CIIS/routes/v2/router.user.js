@@ -21,9 +21,9 @@ const userUpdateDTO = require('../../DTO/user.update.event.dto')
 const { userRegisterDTO } = require('../../DTO/user.register.dto')
 const { getUsers, updateUser, getOneUser, deleteUser } = require('../../controllers/v2/user.controller')
 routerUser.route("/users").get(authMid, isAtLeastOrganizer, getUsers)
-routerUser.route("/user/:id").put(authMid, isAtLeastOrganizer, userUpdateDTO, updateUser)
-routerUser.route("/user/:id").get(authMid, isAtLeastOrganizer, getOneUser)
-routerUser.route("/user/:id").delete(authMid, isAdmin, deleteUser)
+routerUser.route("/users/:id").put(authMid, isAtLeastOrganizer, userUpdateDTO, updateUser)
+routerUser.route("/users/:id").get(authMid, isAtLeastOrganizer, getOneUser)
+routerUser.route("/users/:id").delete(authMid, isAdmin, deleteUser)
 // 2024
 
 routerUser.route("/user").post(userRegisterDTO, (req, res) => {

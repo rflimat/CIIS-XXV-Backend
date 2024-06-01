@@ -215,7 +215,7 @@ const getUsers = async () => {
   return new Promise(async (resolve, reject) => {
     const users = await User.findAll(
       {
-        attributes: ['id_user', 'name_user', 'lastname_user', 'email_user', 'phone_user'],
+        attributes: ['id_user', 'name_user', 'lastname_user', 'dni_user', 'email_user', 'phone_user'],
         include: [
           {
             model: Roles,
@@ -234,6 +234,7 @@ const getUsers = async () => {
           id: user.id_user,
           name: user.name_user,
           lastname: user.lastname_user,
+          dni: user.dni_user,
           email: user.email_user,
           phone: user.phone_user,
           role: {
