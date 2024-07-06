@@ -11,8 +11,10 @@ const RouterTaller = require("./router.taller");
 const RouterReservation = require("./router.reservation");
 const RouterSpeaker = require("./router.speaker");
 const RouterConference = require("./router.conference");
-const RouterEvent=require("./router.event");
+const RouterEvent = require("./router.event");
 const path = require("path");
+const RouterTopic = require("./router.topic")
+
 
 v2Router.use(
   fileUpload({
@@ -24,6 +26,7 @@ v2Router.use("/", routerUser);
 v2Router.use("/", routerSession);
 v2Router.use("/", RouterTaller);
 v2Router.use("/", RouterSpeaker);
+v2Router.use("/", RouterTopic);
 v2Router.use("/", authMid, RouterInscription);
 v2Router.use("/", authMid, RouterReservation);
 v2Router.use("/conference", RouterConference);
