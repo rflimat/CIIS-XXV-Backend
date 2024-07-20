@@ -76,4 +76,10 @@ CONTROLLER_SESSION.POST = (req, res) => {
     });
 };
 
+CONTROLLER_SESSION.DELETE = (req, res) => {
+  //res.status(200).send("session eliminada");
+  res.cookie("token", "", { expires: new Date(0) });
+  res.redirect("/");
+}
+
 module.exports = CONTROLLER_SESSION;
