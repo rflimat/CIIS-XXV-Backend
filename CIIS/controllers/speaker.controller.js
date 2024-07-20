@@ -1,6 +1,6 @@
 const sequelize = require("../config/database");
-const {handleErrorResponse,handleHttpError}=require("../middlewares/handleError");
-const speakerServices=require("../services/speaker.service");
+const { handleErrorResponse, handleHttpError } = require("../middlewares/handleError");
+const speakerServices = require("../services/speaker.service");
 const { getDateTime } = require("../utils/getdate.utils");
 const { createRecordAudit } = require("../services/audit.log.service");
 
@@ -18,20 +18,20 @@ const getSpeakersByEvent = async (req, res) => {
     }
 }
 
-const createSpeaker=async(req,res)=>{
-    const transaction=await sequelize.transaction();
+const createSpeaker = async (req, res) => {
+    const transaction = await sequelize.transaction();
     try {
-        let avatar={};
-        if(req.files && req.files.avatar!=undefined){
-            avatar=req.files.avatar;
+        let avatar = {};
+        if (req.files && req.files.avatar != undefined) {
+            avatar = req.files.avatar;
         }
-        const speakerObject=req.body;
-        const speaker=await speakerServices.createSpeaker(speakerObject,avatar,transaction);
+        const speakerObject = req.body;
+        const speaker = await speakerServices.createSpeaker(speakerObject, avatar, transaction);
         await transaction.commit();
         res.status(201).json(speaker);
     } catch (error) {
         await transaction.rollback();
-        handleHttpError(res,error);
+        handleHttpError(res, error);
     }
 }
 
@@ -41,7 +41,7 @@ const updateSpeaker = async (req, res) => {
         const { idSpeaker } = req.params;
         const { name, lastname, role, workplace, nationality, description, socialNetwork } = req.body;
         const { files } = req;
-        
+
         if (Object.keys(req.body).length > 0 || files) {
             const speakerObject = {};
             if (name !== undefined) speakerObject.name_speaker = name;
@@ -56,7 +56,7 @@ const updateSpeaker = async (req, res) => {
                 avatar = files.avatar;
             }
             await speakerServices.updateSpeaker(idSpeaker, speakerObject, avatar, transaction);
-      
+
             const recordAuditObject = {
                 table_name: "speaker",
                 action_type: "update",
@@ -65,8 +65,8 @@ const updateSpeaker = async (req, res) => {
                 record_id: idSpeaker,
                 new_data: JSON.stringify(speakerObject)
             };
-    
-            await createRecordAudit(recordAuditObject, transaction);  
+
+            await createRecordAudit(recordAuditObject, transaction);
         }
         await transaction.commit();
         res.sendStatus(204);
@@ -80,8 +80,8 @@ const updateSpeaker = async (req, res) => {
     }
 }
 
-module.exports={
-  getSpeakersByEvent,
-  createSpeaker,
-  updateSpeaker
+module.exports = {
+    getSpeakersByEvent,
+    createSpeaker,
+    updateSpeaker
 }

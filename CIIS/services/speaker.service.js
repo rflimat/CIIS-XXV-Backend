@@ -53,7 +53,18 @@ const createSpeaker = (speakerObject, fileImage = {}, transaction) => {
         work_place_speaker: speakerObject.workplace,
         nationality_speaker: speakerObject.nationality,
         about_profile_speaker: speakerObject.description,
-        linkedin_speaker: speakerObject.socialNetwork
+        linkedin_speaker: speakerObject.socialNetwork,
+
+        university_speaker: speakerObject.university,
+        email_speaker: speakerObject.email,
+        phone_speaker: speakerObject.phone,
+
+
+        degree_speaker: speakerObject.degree,
+        trajectory_speaker: speakerObject.trajectory,
+        achievements_speaker: speakerObject.achievements,
+        release_year_speaker: speakerObject.release_year,
+        experience_years_speaker:speakerObject.experience_years
       };
 
       let fileImageSpeaker = {};
@@ -140,11 +151,19 @@ const getSpeakers = async () => {
         name: speaker.name_speaker,
         lastname: speaker.lastname_speaker,
         role: speaker.ocupation_speaker,
+        university: speaker.university_speaker, //
+        email: speaker.email_speaker,//
+        phone: speaker.phone_speaker,//
         workplace: speaker.work_place_speaker,
         nationality: speaker.nationality_speaker,
         description: speaker.about_profile_speaker,
         socialNetwork: speaker.linkedin_speaker,
         avatar: speaker.dir_img_speaker,
+        degree: speaker.degree_speaker,
+        trajectory: speaker.trajectory_speaker,
+        achievements: speaker.achievements_speaker,
+        release_year: speaker.release_year_speaker,
+        experience_years:  speaker.experience_years_speaker,
       };
     });
     resolve(speakersMap);

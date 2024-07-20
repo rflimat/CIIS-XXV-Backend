@@ -341,7 +341,12 @@ CREATE TABLE `speakers` (
   `img_dir_speaker` varchar(255) DEFAULT NULL,
   `work_place_speaker` varchar(45) DEFAULT NULL,
   `nationality_speaker` varchar(45) DEFAULT NULL,
-  `linkedin_speaker` varchar(100) DEFAULT NULL,
+  `linkedin_speaker` varchar(100) DEFAULT NULL, /* */
+  `degree_speaker` varchar(255) DEFAULT NULL,
+  `trajectory_speaker` TEXT DEFAULT NULL,
+  `achievements_speaker` TEXT DEFAULT NULL,
+  `release_year_speaker` TEXT YEAR DEFAULT NULL,
+  `experience_years_speaker` INT DEFAULT NULL,
   PRIMARY KEY (`id_speaker`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

@@ -37,9 +37,10 @@ const speakerCreateDTOSchema = Type.Object(
       minLength: 1,
       errorMessage: "Red social no válida",
     }),
+
   },
   {
-    additionalProperties: false,
+    additionalProperties: true,
     errorMessage: {
       additionalProperties: "El formato no es válido",
     },

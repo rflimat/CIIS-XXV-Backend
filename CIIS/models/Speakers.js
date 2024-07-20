@@ -53,6 +53,27 @@ const Speakers = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    degree_speaker: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    trajectory_speaker: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    achievements_speaker: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    release_year_speaker: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    experience_years_speaker: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    
   },
   {
     timestamps: false,
