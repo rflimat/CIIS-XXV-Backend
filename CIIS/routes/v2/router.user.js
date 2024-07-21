@@ -3,11 +3,9 @@ const Users = require("../../models/Users");
 const http = require("../../utils/http.msg");
 const { encrypt } = require("../../utils/password.utils");
 const { sendMailAtDomain } = require("../../utils/send.mail.utils");
-const { email_registro } = require("../../utils/emails/registro");
 const { authMid, isAdmin, isAtLeastOrganizer } = require("../../middlewares/v2/auth");
 const TallerInscriptionSQL = require("../../models/Taller/TallerInscription");
 const Taller = require("../../classes/Taller");
-const CONTROLLER_SESSION = require("../../controllers/v2/session");
 const Reservation = require("../../models/Reservation");
 const {
   mail2sendUserCode,
@@ -19,51 +17,21 @@ const routerUser = Router();
 // 2024
 const userUpdateDTO = require('../../DTO/user.update.event.dto')
 const { userRegisterDTO } = require('../../DTO/user.register.dto')
-const { getUsers, updateUser, getOneUser, deleteUser } = require('../../controllers/v2/user.controller')
+const { getUsers, updateUser, getOneUser, deleteUser, registerUser, createUser } = require('../../controllers/v2/user.controller');
+const { userCreateDTO } = require("../../DTO/user.create.dto");
+
+
 routerUser.route("/users").get(authMid, isAtLeastOrganizer, getUsers)
 routerUser.route("/users/:id").put(authMid, isAtLeastOrganizer, userUpdateDTO, updateUser)
 routerUser.route("/users/:id").get(authMid, isAtLeastOrganizer, getOneUser)
 routerUser.route("/users/:id").delete(authMid, isAdmin, deleteUser)
+routerUser.route("/users").post(authMid, isAdmin, userCreateDTO, createUser)
 // 2024
 
-routerUser.route("/user").post(userRegisterDTO, (req, res) => {
-  const { dni, email, password, name, lastname, phone } = req.body;
 
-  Users.findAll({ where: { dni_user: dni } })
-    .then((data) => {
-      if (Array.isArray(data)) {
-        if (data.length > 0) return Promise.reject(http["409"]);
-        else return Promise.resolve();
-      } else return Promise.reject(http["500"]);
-    })
-    .then(() => Users.findAll({ where: { email_user: email } }))
-    .then((data) => {
-      if (Array.isArray(data)) {
-        if (data.length > 0) return Promise.reject(http["409"]);
-        else return Promise.resolve();
-      } else return Promise.reject(http["500"]);
-    })
-    .then(async () =>
-      Users.create({
-        email_user: email,
-        name_user: name,
-        lastname_user: lastname,
-        dni_user: dni,
-        role_id: 2,
-        password_user: await encrypt(password),
-        phone_user: phone,
-      })
-    )
-    .then(async (newUser) => {
-      sendMailAtDomain(email, "Registro exitoso", email_registro);
-      CONTROLLER_SESSION.POST(req, res);
-    })
-    .catch((fail = null) => {
-      fail.code
-        ? res.status(fail.code).send(fail)
-        : res.status(500).send(http["500"]);
-    });
-});
+
+
+routerUser.route("/user").post(userRegisterDTO, registerUser);
 
 routerUser.route("/user/inscription").get(authMid, async (req, res) => {
   const { event } = req.query;

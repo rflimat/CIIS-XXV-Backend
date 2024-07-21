@@ -2,7 +2,9 @@ const Reservation = require("../models/Reservation");
 const { Op } = require("sequelize");
 const Roles = require("../models/Roles");
 const User = require("../models/Users");
-
+const { sendMailAtDomain } = require("../utils/send.mail.utils");
+const { email_registro } = require("../utils/emails/registro");
+const { encrypt } = require("../utils/password.utils"); 
 const searchUserByReservation = async (id_reservation) => {
   const reservation = await Reservation.findOne({
     where: {
@@ -315,6 +317,32 @@ const deleteUserById = async (id) => {
     }
   });
 };
+
+const createNewUser = async (userData) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+
+      const newUser = await User.create({
+        email_user: userData.email,
+        name_user: userData.name,
+        lastname_user: userData.lastname,
+        dni_user: userData.dni,
+        role_id: userData.role, // asistente
+        password_user: await encrypt(userData.password),
+        phone_user: userData.phone,
+      });
+
+      await sendMailAtDomain(userData.email, "Registro exitoso", email_registro);
+
+      resolve({ message: 'Usuario creado correctamente' });
+    } catch (error) {
+      reject({
+        code: 500,
+        message: "Error al crear el usuario"
+      });
+    }
+  });
+};
 module.exports = {
   searchUserByReservation,
   createRegisterUser,
@@ -328,5 +356,6 @@ module.exports = {
   getUserByEmail,
   getUsers,
   getOneUser,
-  deleteUserById
+  deleteUserById,
+  createNewUser
 };

@@ -35,6 +35,13 @@ const UserRegisterDtoSchema = Type.Object(
         pattern: "La contraseña debe tener de 8 a 16 caracteres alfanuméricos",
       },
     }),
+    confPassword: Type.String({
+      pattern: "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,16}$",
+      errorMessage: {
+        type: "Debe ser un string",
+        pattern: "La contraseña debe tener de 8 a 16 caracteres alfanuméricos",
+      },
+    }),
     dni: Type.String({
       minLength: 8,
       maxLength: 20,
@@ -129,7 +136,7 @@ const validatePasswordSchema = ajv.compile(UserPasswordDto);
 
 const userRegisterDTO = (req, res, next) => {
   const isDTOValid = validateUserSchema(req.body);
-
+  console.log(isDTOValid)
   if (!isDTOValid) {
     const errors = validateUserSchema.errors.map((error) => error.message);
     handleErrorResponse(res, errors, 400);
