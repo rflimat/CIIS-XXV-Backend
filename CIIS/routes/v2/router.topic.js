@@ -8,4 +8,6 @@ RouterTopic.route("/topics/:id").get(getTopic)
 RouterTopic.route('/topics/:id').put(updateTopic)
 RouterTopic.route('/topics/:id').delete(deleteTopic)
 RouterTopic.get('/topics', getTopics);
+
+// post tocpis
 module.exports = RouterTopic;

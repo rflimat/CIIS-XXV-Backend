@@ -20,7 +20,7 @@ const getTopics = async (query) => {
     ) {
 
       const topics = await Topics.findAll({
-        attributes: [['name_topic', 'name'], ['description_topic', 'description']]
+        attributes: [['id_topic', 'id'], ['name_topic', 'name'], ['description_topic', 'description']]
       });
       resolve(topics);
       return;
@@ -115,7 +115,7 @@ const getTopicByID = async (id) => {
     const topicFormated = {
       id: topicFound.id_topic,
       name: topicFound.name_topic,
-      descripcion: topicFound.description_topic,
+      description: topicFound.description_topic,
       is_active: topicFound.is_active_topic
     }
     resolve(topicFormated);
