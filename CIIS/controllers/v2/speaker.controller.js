@@ -26,12 +26,13 @@ CONTROLLER_SPEAKER.GET = async (req, res) => {
 CONTROLLER_SPEAKER.GETONE = async (req, res) => {
     try {
         const { id } = req.params;
-        const speaker = new Speaker();
-        await speaker.load(id);
-
-        if (speaker.id_speaker == undefined) {
+        //const speaker = new Speaker();
+        //await speaker.load(id);
+        const speaker = await speakerServices.getSpeaker(id)
+        /* if (speaker.id_speaker == undefined) {
             return handleErrorResponse(res, "El speaker no ha sido encontrado", 404);
-        }
+        } */
+        console.log(speaker)
         const speakerFormat = {
             id: speaker.id_speaker,
             name: speaker.name_speaker,

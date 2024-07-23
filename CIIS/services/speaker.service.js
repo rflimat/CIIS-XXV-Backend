@@ -64,7 +64,7 @@ const createSpeaker = (speakerObject, fileImage = {}, transaction) => {
         trajectory_speaker: speakerObject.trajectory,
         achievements_speaker: speakerObject.achievements,
         release_year_speaker: speakerObject.release_year,
-        experience_years_speaker:speakerObject.experience_years
+        experience_years_speaker: speakerObject.experience_years
       };
 
       let fileImageSpeaker = {};
@@ -163,7 +163,7 @@ const getSpeakers = async () => {
         trajectory: speaker.trajectory_speaker,
         achievements: speaker.achievements_speaker,
         release_year: speaker.release_year_speaker,
-        experience_years:  speaker.experience_years_speaker,
+        experience_years: speaker.experience_years_speaker,
       };
     });
     resolve(speakersMap);
@@ -197,11 +197,39 @@ const deleteSpeaker = async (id) => {
     }
   });
 };
+
+const getSpeaker = async (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const speaker = await Speakers.findOne({
+        where: {
+          id_speaker: id
+        },
+      });
+
+      if (!speaker) {
+        reject({
+          code: 404,
+          message: "El speaker no existe"
+        });
+        return;
+      }
+
+      resolve(speaker);
+    } catch (error) {
+      reject({
+        code: 500,
+        message: "Error al obtener el speaker"
+      });
+    }
+  });
+};
 module.exports = {
   getSpeakersByEvent,
   createSpeaker,
   createConferenceToSpeaker,
   updateSpeaker,
   getSpeakers,
-  deleteSpeaker
+  deleteSpeaker,
+  getSpeaker
 };
