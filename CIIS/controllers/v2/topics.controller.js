@@ -46,8 +46,22 @@ const deleteTopic = async (req, res) => {
     }
 };
 
+const createTopic = async (req, res) => {
+    const transaction = await sequelize.transaction();
+    try {
+        const topicObject = req.body
+        const topic = await topicService.createTopicService(topicObject, transaction)
+        await transaction.commit();
+        res.json(topic);
+    } catch (error) {
+        await transaction.rollback();
+        handleHttpError(res, error)
+    }
+}
+
 module.exports = {
     getTopic,
     updateTopic,
-    deleteTopic
+    deleteTopic,
+    createTopic
 }

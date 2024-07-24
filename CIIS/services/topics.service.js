@@ -169,10 +169,28 @@ const deleteTopicService = async (id) => {
   });
 };
 
+const createTopicService = (topicObject, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const dataObject = {
+        name_topic: topicObject.name,
+        description_topic: topicObject.description
+      }
+      console.log(dataObject)
+      const topicBuild = Topics.build(dataObject, { transaction, })
+      const topicCreated = await topicBuild.save({ transaction })
+      resolve(topicCreated)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
 module.exports = {
   getTopics,
   getTopicsToEvent,
   getTopicByID,
   updateTopicService,
-  deleteTopicService
+  deleteTopicService,
+  createTopicService
 };
