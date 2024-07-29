@@ -30,7 +30,7 @@ v2Router.use("/", RouterTopic);
 v2Router.use("/", authMid, RouterInscription);
 v2Router.use("/", authMid, RouterReservation);
 v2Router.use("/conference", RouterConference);
-v2Router.use("/event", RouterEvent);
+v2Router.use("/events", RouterEvent);
 
 v2Router.use(
   "/",

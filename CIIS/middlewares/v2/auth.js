@@ -21,7 +21,7 @@ const isAdmin = (req, res, next) => {
 };
 
 const isAtLeastOrganizer = (req, res, next) => {
-  if ([1, 3].includes(req.user.role)) next();
+  if ([1, 2].includes(req.user.role)) next();
   else return res.status(403).send(http["403"]);
 };
 

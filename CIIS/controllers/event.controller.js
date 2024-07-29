@@ -120,9 +120,9 @@ const registerOneAttendance=()=>new Promise((resolve, reject) => {
 module.exports = {
   getEvents,
   getOneEvent,
-  createEvent,
+  //createEvent,
   updateEvent,
-  deleteEvent,
+  //deleteEvent,
   getEventImages,
   registerAttendance,
   getCountAttendances
