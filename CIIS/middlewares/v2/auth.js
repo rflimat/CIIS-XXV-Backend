@@ -8,7 +8,8 @@ const authMid = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
     req.user = decoded;
-    //console.log(req.user)
+    //console.log(req.user.id)
+    req.iduser = req.user.id
     next(); // Aquí solo llamamos a next sin argumentos
   } catch (error) {
     return res.status(401).send(http["401"]);

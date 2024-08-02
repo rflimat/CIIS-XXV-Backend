@@ -5,6 +5,11 @@ const {
   registerAttendanceConferenceCurrent,
   getConferenceDayUser,
   POST_ANY_ATTENDANCE,
+  createConference,
+  getConferences,
+  getOneConference,
+  updateConference,
+  deleteConference,
 } = require("../../controllers/v2/conference.controller");
 const {
   authMid,
@@ -31,5 +36,13 @@ conferenceRouter
   .get("/schedule-day", authMid, getConferenceDayUser);
 
 conferenceRouter.route("/:id").post(authMid, isAdmin, POST_ANY_ATTENDANCE);
+
+
+// CRUD
+conferenceRouter.route("/").post(authMid, isAtLeastOrganizer, createConference)
+conferenceRouter.route("/").get(getConferences)
+conferenceRouter.route("/:idConference").get(getOneConference)
+conferenceRouter.route("/:idConference").put(authMid, isAtLeastOrganizer, updateConference)
+conferenceRouter.route("/:idConference").delete(authMid, isAtLeastOrganizer, deleteConference)
 
 module.exports = conferenceRouter;
