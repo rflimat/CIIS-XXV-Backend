@@ -14,7 +14,7 @@ const RouterConference = require("./router.conference");
 const RouterEvent = require("./router.event");
 const path = require("path");
 const RouterTopic = require("./router.topic")
-
+const RouterSponsor = require("./router.sponsor")
 
 v2Router.use(
   fileUpload({
@@ -27,10 +27,11 @@ v2Router.use("/", routerSession);
 v2Router.use("/", RouterTaller);
 v2Router.use("/", RouterSpeaker);
 v2Router.use("/", RouterTopic);
-v2Router.use("/", authMid, RouterInscription);
-v2Router.use("/", authMid, RouterReservation);
 v2Router.use("/conference", RouterConference);
 v2Router.use("/events", RouterEvent);
+v2Router.use("/", authMid, RouterInscription);
+v2Router.use("/", authMid, RouterReservation);
+v2Router.use("/sponsors", authMid, RouterSponsor)
 
 v2Router.use(
   "/",

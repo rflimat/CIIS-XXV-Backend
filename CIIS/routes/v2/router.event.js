@@ -22,12 +22,13 @@ const { getGalleryEvent, deleteGalleryEvent } = require("../../controllers/v2/ga
 const { getSponsorsByEvent, createSponsorsByEvent } = require("../../controllers/sponsor.controller");
 const sponsorCreateDTO = require("../../DTO/sponsor.create.dto");
 
-eventRouter.get(
-  "/:idEvent/attendances",
-  authMid,
-  validateExistEvent,
-  getCountAttendances
-);
+eventRouter.route("/:idEvent/attendances")
+  .get(
+    authMid,
+    validateExistEvent,
+    getCountAttendances
+  );
+
 
 // GET EVENTS
 eventRouter.route("/").get(getEvents)
@@ -47,6 +48,7 @@ eventRouter.route("/:id/report").get(isAtLeastOrganizer, getEventReport);
 eventRouter.route('/:idEvent/gallery').post(authMid, isAtLeastOrganizer, validateExistEvent, uploadMultipleOrSingleFile("image", ["jpg", "jpeg", "png"]), validateFormDataToUploadImages(["name", "priority", "image"]), createGalleryEvent);
 eventRouter.route('/:idEvent/gallery').get(getGalleryEvent)
 eventRouter.route("/gallery/:id").delete(authMid, isAdmin, deleteGalleryEvent)
+
 
 // sponsors
 
