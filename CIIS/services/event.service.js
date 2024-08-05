@@ -199,8 +199,15 @@ const deleteEvent = async (id) => {
         });
         return;
       }
-      await deleteImage("public", event.dir_logo)
-      await deleteImage("public", event.dir_brouchere)
+      /* const dataEvent = event.dataValues
+      console.log(dataEvent.dir_logo)
+      console.log(dataEvent.dir_brouchere)
+      if (dataEvent.dir_logo != null) {
+        await deleteImage("public", dataEvent.dir_logo)
+      }
+      if (dataEvent.dir_brouchere != null) {
+        await deleteImage("public", dataEvent.dir_brouchere)
+      } */
       await event.destroy();
       resolve({ message: 'Evento eliminado correctamente' });
     } catch (error) {
