@@ -9,7 +9,7 @@ const handleGet = (req, res) =>
     nombres: "Raul Fernando",
     "primer apellido": "Lima",
     "segundo apellido": "Tuyo",
-    edad: 20,
+    edad: 21,
   });
 
 router.get("/", handleGet);
