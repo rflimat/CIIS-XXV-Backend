@@ -2,7 +2,7 @@ const Taller = require("../../classes/Taller");
 const TallerInscriptionSQL = require("../../models/Taller/TallerInscription");
 const Users = require("../../models/Users");
 const { confirm, abort } = require("../../utils/emails/confirmTaller");
-const { sendMailAtDomain } = require("../../utils/send.mail.utils");
+const { sendMail } = require("../../utils/send.mail.utils");
 
 const path = require("path");
 const TallerSQL = require("../../models/Taller/Taller");
@@ -64,7 +64,7 @@ CONTROLLER_TALLER.PATCH_INSCRIPTION = async (req, res) => {
     await taller.load(id);
 
     if (state == 1)
-      sendMailAtDomain(
+      sendMail(
         tallerInscription.relatedUser.email_user,
         `Confirmación de inscripción taller CIIS - ${taller.name}`,
         confirm(
@@ -76,7 +76,7 @@ CONTROLLER_TALLER.PATCH_INSCRIPTION = async (req, res) => {
         )
       );
     else if (state == 2)
-      sendMailAtDomain(
+      sendMail(
         tallerInscription.relatedUser.email_user,
         `Observación de inscripción taller CIIS - ${taller.name}`,
         abort(
@@ -112,7 +112,7 @@ CONTROLLER_TALLER.POST_PARTICIPANT = async (req, res) => {
 
     res.send(taller);
 
-    await sendMailAtDomain(
+    await sendMail(
       req.user.email,
       `Registro a taller ${taller.name} | CIIS`,
       emailRegistroTaller(req.user, taller)

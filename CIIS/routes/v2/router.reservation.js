@@ -2,7 +2,7 @@ const { Router } = require("express");
 const RouterReservation = Router();
 const { isAdmin } = require("../../middlewares/v2/auth");
 const Reservation = require("../../models/Reservation");
-const { sendMailAtDomain } = require("../../utils/send.mail.utils");
+const { sendMail } = require("../../utils/send.mail.utils");
 const { confirm, abort } = require("../../utils/emails/confirmReservation");
 const Users = require("../../models/Users");
 const CONTROLLER_RESERVATION = require("../../controllers/v2/reservation");
@@ -21,13 +21,13 @@ RouterReservation.route("/reservation/:id").patch(isAdmin, async (req, res) => {
     );
 
     if (status == 1)
-      await sendMailAtDomain(
+      await sendMail(
         user.email_user,
         "Confirmación de inscripción CIIS XXIV",
         confirm({ name: user.name_user, lastname: user.lastname_user })
       );
     else if (status == 2)
-      await sendMailAtDomain(
+      await sendMail(
         user.email_user,
         "Observación de inscripción CIIS XXIV",
         abort({ name: user.name_user, lastname: user.lastname_user })

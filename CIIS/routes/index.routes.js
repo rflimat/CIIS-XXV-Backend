@@ -6,9 +6,9 @@ const v2Router = require("./v2/v2.router");
 // const handleGet = (req, res) => res.send('<h1>Hey buddy! this is an api...<br>here we do not provide user interfaces 🥴</h1>')
 const handleGet = (req, res) =>
   res.send({
-    nombres: "Anselmo César",
-    "primer apellido": "Farfan",
-    "segundo apellido": "Pajuelo",
+    nombres: "Raul Fernando",
+    "primer apellido": "Lima",
+    "segundo apellido": "Tuyo",
     edad: 20,
   });
 

@@ -15,7 +15,7 @@ const sendQRToEmail = async (users) => {
               const qrImageData = canvas.toBuffer();
       
                const mailOptions = {
-                  from: 'XX POSTMASTER <noreply.test.ciis@gmail.com>',
+                  from: 'XX POSTMASTER <web.team@ciistacna.com>',
                   to: user.email,
                   subject: sendQR.subject,
                   html:sendQR.content,

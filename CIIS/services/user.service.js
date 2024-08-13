@@ -2,7 +2,7 @@ const Reservation = require("../models/Reservation");
 const { Op } = require("sequelize");
 const Roles = require("../models/Roles");
 const User = require("../models/Users");
-const { sendMailAtDomain } = require("../utils/send.mail.utils");
+const { sendMail } = require("../utils/send.mail.utils");
 const { email_registro } = require("../utils/emails/registro");
 const { encrypt } = require("../utils/password.utils"); 
 const searchUserByReservation = async (id_reservation) => {
@@ -332,7 +332,7 @@ const createNewUser = async (userData) => {
         phone_user: userData.phone,
       });
 
-      await sendMailAtDomain(userData.email, "Registro exitoso", email_registro);
+      await sendMail(userData.email, "Registro exitoso", email_registro);
 
       resolve({ message: 'Usuario creado correctamente' });
     } catch (error) {

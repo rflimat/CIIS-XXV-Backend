@@ -2,7 +2,7 @@ const Reservation = require("../../models/Reservation");
 const Users = require("../../models/Users");
 const { confirm } = require("../../utils/emails/confirmReservation");
 const http = require("../../utils/http.msg");
-const { sendMailAtDomain } = require("../../utils/send.mail.utils");
+const { sendMail } = require("../../utils/send.mail.utils");
 
 const CONTROLLER_RESERVATION = {};
 
@@ -43,7 +43,7 @@ CONTROLLER_RESERVATION.POST_BY_QR = async (req, res) => {
         dir_fileuniversity: "/img/CIIS/XXIV/logo-ins-by-admin.png",
       });
 
-      await sendMailAtDomain(
+      await sendMail(
         user.email_user,
         "Inscripción a CIIS XXIV",
         confirm({ name: user.name_user, lastname: user.lastname_user })

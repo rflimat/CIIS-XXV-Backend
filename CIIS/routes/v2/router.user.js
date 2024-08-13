@@ -2,7 +2,7 @@ const { Router } = require("express");
 const Users = require("../../models/Users");
 const http = require("../../utils/http.msg");
 const { encrypt } = require("../../utils/password.utils");
-const { sendMailAtDomain } = require("../../utils/send.mail.utils");
+const { sendMail } = require("../../utils/send.mail.utils");
 const { authMid, isAdmin, isAtLeastOrganizer } = require("../../middlewares/v2/auth");
 const TallerInscriptionSQL = require("../../models/Taller/TallerInscription");
 const Taller = require("../../classes/Taller");
@@ -135,7 +135,7 @@ routerUser.route("/user/code").post(async (req, res) => {
         code: 404,
       });
 
-    sendMailAtDomain(
+    sendMail(
       email,
       "CIIS SOPORTE - Código único de usuario",
       mail2sendUserCode({
@@ -180,7 +180,7 @@ routerUser.route("/user/restore").post(async (req, res) => {
       }
     );
 
-    sendMailAtDomain(
+    sendMail(
       email,
       "CIIS SOPORTE - Restauración de contraseña",
       mail2sendUserPass({

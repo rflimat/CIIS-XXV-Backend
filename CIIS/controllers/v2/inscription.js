@@ -1,7 +1,7 @@
 const path = require("path");
 const ScholarCodes = require("../../models/ScholarCodes");
 const Reservation = require("../../models/Reservation");
-const { sendMailAtDomain } = require("../../utils/send.mail.utils");
+const { sendMail } = require("../../utils/send.mail.utils");
 const { emailRegistroCIIS } = require("../../utils/emails/registro");
 const http = require("../../utils/http.msg");
 const { getRegistrations } = require("../../services/registration.service");
@@ -34,7 +34,7 @@ const registers = {
             created_at: new Date(),
           })
             .then((data) => {
-              sendMailAtDomain(
+              sendMail(
                 req.user.email,
                 'Pre inscripción a "Congreso Internacional de Informática y Sistemas, 24° Edición" exitosa',
                 emailRegistroCIIS(req.user)
@@ -76,7 +76,7 @@ const registers = {
             created_at: new Date(),
           })
             .then((data) => {
-              sendMailAtDomain(
+              sendMail(
                 req.user.email,
                 'Pre inscripción a "Congreso Internacional de Informática y Sistemas, 24° Edición" exitosa',
                 emailRegistroCIIS(req.user)
@@ -131,7 +131,7 @@ const registers = {
                 created_at: new Date(),
               })
                 .then((data) => {
-                  sendMailAtDomain(
+                  sendMail(
                     req.user.email,
                     'Pre inscripción a "Congreso Internacional de Informática y Sistemas, 24° Edición" exitosa',
                     emailRegistroCIIS(req.user)
@@ -178,7 +178,7 @@ const registers = {
             created_at: new Date(),
           })
             .then((data) => {
-              sendMailAtDomain(
+              sendMail(
                 req.user.email,
                 'Pre inscripción a "Congreso Internacional de Informática y Sistemas, 24° Edición" exitosa',
                 emailRegistroCIIS(req.user)
