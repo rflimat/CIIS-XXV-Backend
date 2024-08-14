@@ -21,6 +21,7 @@ const { uploadMultipleOrSingleFile } = require("../../middlewares/upload.file");
 const { getGalleryEvent, deleteGalleryEvent } = require("../../controllers/v2/galleryEvent.controller");
 const { getSponsorsByEvent, createSponsorsByEvent } = require("../../controllers/sponsor.controller");
 const sponsorCreateDTO = require("../../DTO/sponsor.create.dto");
+const { ConferencebyEvent } = require("../../controllers/v2/conference.controller");
 
 eventRouter.route("/:idEvent/attendances")
   .get(
@@ -55,5 +56,6 @@ eventRouter.route("/gallery/:id").delete(authMid, isAdmin, deleteGalleryEvent)
 eventRouter.route('/:idEvent/sponsors').get(getSponsorsByEvent);
 eventRouter.route('/:idEvent/sponsors').post(authMid, isAtLeastOrganizer, validateFileOptional("avatar", ["jpg", "jpeg", "png"]), sponsorCreateDTO, createSponsorsByEvent);
 
+eventRouter.route('/:idEvent/conferences').get(ConferencebyEvent)
 
 module.exports = eventRouter;

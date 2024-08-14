@@ -22,7 +22,7 @@ const {
 const { updateReservation } = require("../../services/registration.service");
 const { updateUser } = require("../../services/user.service");
 const http = require("../../utils/http.msg");
-const { createConferenceService, getConferencesService, updateConferenceService, deleteConferenceService } = require("../../services/conference.service");
+const { createConferenceService, getConferencesService, updateConferenceService, deleteConferenceService, getConferenceByEvent, getConferenceService } = require("../../services/conference.service");
 
 const registerAttendanceByUser = async (req, res) => {
   const transaction = await sequelize.transaction();
@@ -230,7 +230,7 @@ const getConferences = async (req, res) => {
 const getOneConference = async (req, res) => {
   try {
     const { idConference } = req.params
-    const conferences = await getConferencesService(idConference)
+    const conferences = await getConferenceService(idConference)
     if (!conferences) {
       handleErrorResponseV2(
         res,
@@ -240,6 +240,21 @@ const getOneConference = async (req, res) => {
       return;
     }
     res.json(conferences)
+  } catch (error) {
+    if (typeof error.code == "number") {
+      handleErrorResponseV2(res, error.message, error.code);
+      return;
+    }
+    handleHttpErrorV2(res, error);
+  }
+}
+
+const ConferencebyEvent = async (req, res) => {
+  try {
+    const { idEvent } = req.params
+    const event = await eventService.getOneEvent(idEvent)
+    result = await getConferenceByEvent(idEvent)
+    res.json(result)
   } catch (error) {
     if (typeof error.code == "number") {
       handleErrorResponseV2(res, error.message, error.code);
@@ -344,5 +359,6 @@ module.exports = {
   getOneConference,
   createConference,
   updateConference,
-  deleteConference
+  deleteConference,
+  ConferencebyEvent
 };

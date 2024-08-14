@@ -111,8 +111,8 @@ const updateSponsorService = (id, sponsorObject, fileImage, transaction) => {
                 sponsorUpdate.dir_img_sponsor = fileImagesponsor.filename;
                 await sponsorUpdate.save({ transaction });
                 pathTemp = fileImagesponsor.filename;
+                await deleteImage("public", dir_img_anterior)
             }
-            await deleteImage("public", dir_img_anterior)
             resolve(sponsorUpdate);
         } catch (error) {
             if (error.file == "sponsors") {
