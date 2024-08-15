@@ -68,7 +68,7 @@ const getConferenceByEvent = async (idEvent) => {
                     idSpeaker: conference.speaker_id
                 }
             })
-            resolve(dataFormatted.length == 1 ? dataFormatted[0] : dataFormatted);
+            resolve(dataFormatted);
         } catch (error) {
             reject(error);
         }
