@@ -53,16 +53,15 @@ const getUsers = async (req, res) => {
 const updateUser = async (req, res) => {
     const transaction = await sequelize.transaction();
     try {
-        const { name, lastname, phone, dni, email, password, role } = await req.body;
+        const { name, lastname, phone, dni, email, password, role, career, studycenter } = await req.body;
         const { id } = await req.params
-        const user = new userDTO(name, lastname, email, dni, phone, "", "")
+        const user = new userDTO(name, lastname, email, dni, phone, career, studycenter)
         if (role) {
             user.role = role.id
         }
         if (password) {
             user.password = await encrypt(password);
         }
-        //console.log(user)
         await userService.updateUser(id, user, transaction)
         res.sendStatus(200);
         await transaction.commit();

@@ -198,5 +198,33 @@ routerUser.route("/user/restore").post(async (req, res) => {
   }
 });
 
+routerUser.route("/user/studycenter").patch(authMid, async (req, res) => {
+  try {
+    const { studyCenter } = req.body;
+    Users.update(
+      { study_center_user: studyCenter },
+      { where: { id_user: req.user.id } }
+    );
+    res.status(201).json({ msg: "ok" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(http["500"]);
+  }
+});
+
+routerUser.route("/user/career").patch(authMid, async (req, res) => {
+  try {
+    const { career } = req.body;
+    Users.update(
+      { university_career_user: career },
+      { where: { id_user: req.user.id } }
+    );
+    res.status(201).json({ msg: "ok" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(http["500"]);
+  }
+});
+
 
 module.exports = routerUser;

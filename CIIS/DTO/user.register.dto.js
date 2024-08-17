@@ -49,7 +49,7 @@ const UserRegisterDtoSchema = Type.Object(
     }),
   },
   {
-    additionalProperties: false,
+    additionalProperties: true,
     errorMessage: {
       additionalProperties: "El formato no es válido",
     },

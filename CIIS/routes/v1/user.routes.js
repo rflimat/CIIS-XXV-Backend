@@ -17,13 +17,11 @@ routerUser.post('/previous-register', userEmailDTO, validateExistAccountUser, ch
 routerUser.get('/check-code', userCheckEmailCodeDTO, checkCodeToCreateAccount);
 routerUser.get('/info', checkTokenTemporary, getPreviousInfoUser);
 //routerUser.post('/register',checkTokenTemporaryToCreateAccount,validateExistAccountUser,userCreateAccountDTO,createAccountUser);
-routerUser.post('/register', createAccountUser);
-routerUser.post('/', checkAuth, checkRole(["Administrador"]), userRegisterDTO, createUserOrganizer); // si funciona
+//routerUser.post('/register', createAccountUser);
+//routerUser.post('/', checkAuth, checkRole(["Administrador"]), userRegisterDTO, createUserOrganizer); // si funciona
 
 module.exports = routerUser;
 
 /*
-organizador 3
-administrador 1
-// asistente
+
 */

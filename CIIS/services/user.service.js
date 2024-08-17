@@ -4,7 +4,7 @@ const Roles = require("../models/Roles");
 const User = require("../models/Users");
 const { sendMail } = require("../utils/send.mail.utils");
 const { email_registro } = require("../utils/emails/registro");
-const { encrypt } = require("../utils/password.utils"); 
+const { encrypt } = require("../utils/password.utils");
 const searchUserByReservation = async (id_reservation) => {
   const reservation = await Reservation.findOne({
     where: {
@@ -217,7 +217,7 @@ const getUsers = async () => {
   return new Promise(async (resolve, reject) => {
     const users = await User.findAll(
       {
-        attributes: ['id_user', 'name_user', 'lastname_user', 'dni_user', 'email_user', 'phone_user'],
+        attributes: ['id_user', 'name_user', 'lastname_user', 'dni_user', 'email_user', 'university_career_user', 'study_center_user', 'phone_user'],
         include: [
           {
             model: Roles,
@@ -239,6 +239,8 @@ const getUsers = async () => {
           dni: user.dni_user,
           email: user.email_user,
           phone: user.phone_user,
+          career: user.university_career_user,
+          studyCenter: user.study_center_user,
           role: {
             name: user.role.name_role  // Añadir el nombre del rol aquí
           }
@@ -256,7 +258,7 @@ const getOneUser = async (id) => {
       where: {
         id_user: id
       },
-      attributes: ['name_user', 'lastname_user', 'dni_user', 'phone_user', 'email_user', 'phone_user'],
+      attributes: ['name_user', 'lastname_user', 'dni_user', 'phone_user', 'email_user', 'university_career_user', 'study_center_user', 'phone_user'],
       include: [
         {
           model: Roles,
@@ -279,6 +281,8 @@ const getOneUser = async (id) => {
         dni: user.dni_user,
         phone: user.phone_user,
         email: user.email_user,
+        career: user.university_career_user,
+        studyCenter: user.study_center_user,
         role: {
           id: user.role.id_role,
           name: user.role.name_role
@@ -328,6 +332,8 @@ const createNewUser = async (userData) => {
         lastname_user: userData.lastname,
         dni_user: userData.dni,
         role_id: userData.role, // asistente
+        university_career_user: userData.career,
+        study_center_user: userData.studyCenter,
         password_user: await encrypt(userData.password),
         phone_user: userData.phone,
       });
