@@ -224,6 +224,8 @@ const getSpeaker = async (id) => {
     }
   });
 };
+
+
 module.exports = {
   getSpeakersByEvent,
   createSpeaker,

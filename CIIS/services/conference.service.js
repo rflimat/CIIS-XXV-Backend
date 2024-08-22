@@ -1,4 +1,5 @@
 const Conferences = require("../models/Conferences");
+const Speakers = require("../models/Speakers");
 const { getOneEvent } = require("./event.service");
 const { getSpeaker } = require("./speaker.service");
 
@@ -74,7 +75,42 @@ const getConferenceByEvent = async (idEvent) => {
         }
     });
 }
+const getConferenceByEventOrder = async (idEvent) => {
+    return new Promise(async (resolve, reject) => {
+        try {
 
+            const conferences = await Conferences.findAll({
+                attributes: ['id_conference', 'start_date_conference', 'exp_date_conference', 'topic_conference'],
+                where: { event_id: idEvent },
+                order: [
+                    ['is_morning', 'DESC'],
+                    ['start_date_conference', 'ASC'],
+                ],
+                include: [{
+                    model: Speakers,
+                    attributes: ['id_speaker', 'name_speaker', 'nationality_speaker']
+                }]
+            })
+            let dataFormatted = {}
+            dataFormatted = conferences.map((conference) => {
+                return {
+                    id: conference.id_conference,
+                    topic: conference.topic_conference,
+                    start: conference.start_date_conference,
+                    end: conference.exp_date_conference,
+                    type: "Ponencia",
+                    isMorning: conference.is_morning,
+                    speaker: conference.speaker.name_speaker,
+                    idSpeaker: conference.speaker_id,
+                    country: conference.speaker.nationality_speaker
+                }
+            })
+            resolve(dataFormatted);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
 const createConferenceService = async (conferenceObj, transaction) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -140,5 +176,6 @@ module.exports = {
     getConferenceService,
     updateConferenceService,
     deleteConferenceService,
-    getConferenceByEvent
+    getConferenceByEvent,
+    getConferenceByEventOrder
 }

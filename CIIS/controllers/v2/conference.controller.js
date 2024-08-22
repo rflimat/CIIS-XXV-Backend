@@ -22,7 +22,7 @@ const {
 const { updateReservation } = require("../../services/registration.service");
 const { updateUser } = require("../../services/user.service");
 const http = require("../../utils/http.msg");
-const { createConferenceService, getConferencesService, updateConferenceService, deleteConferenceService, getConferenceByEvent, getConferenceService } = require("../../services/conference.service");
+const { createConferenceService, getConferencesService, updateConferenceService, deleteConferenceService, getConferenceByEvent, getConferenceService, getConferenceByEventOrder } = require("../../services/conference.service");
 
 const registerAttendanceByUser = async (req, res) => {
   const transaction = await sequelize.transaction();
@@ -350,6 +350,49 @@ const deleteConference = async (req, res) => {
   }
 }
 
+
+const getJsonConference = async (req, res) => {
+  try {
+    const { idEvent } = req.params
+    const event = await eventService.getOneEvent(idEvent)
+    data = await getConferenceByEventOrder(idEvent)
+
+    const eventosPorFecha = data.reduce((acc, evento) => {
+      const date = new Date(evento.start)
+      const fecha = date.toLocaleDateString();
+
+      if (!acc[fecha]) {
+        acc[fecha] = {
+          day: date.toLocaleDateString('es-ES', { weekday: 'long' }),
+          date: date,
+          early: [],
+          late: []
+        };
+      }
+      if (evento.isMorning === true) {
+        acc[fecha].early.push(evento);
+      } else {
+        acc[fecha].late.push(evento);
+      }
+
+      return acc;
+    }, {});
+    const contenidoJSON = JSON.stringify(Object.values(eventosPorFecha))
+    const fileName = 'cronograma.json';
+
+    res.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(contenidoJSON);
+    //res.json(Object.values(eventosPorFecha))
+  } catch (error) {
+    if (typeof error.code == "number") {
+      handleErrorResponseV2(res, error.message, error.code);
+      return;
+    }
+    handleHttpErrorV2(res, error);
+  }
+}
+
 module.exports = {
   registerAttendanceByUser,
   registerAttendanceConferenceCurrent,
@@ -360,5 +403,6 @@ module.exports = {
   createConference,
   updateConference,
   deleteConference,
-  ConferencebyEvent
+  ConferencebyEvent,
+  getJsonConference
 };

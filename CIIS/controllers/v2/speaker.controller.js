@@ -19,6 +19,25 @@ CONTROLLER_SPEAKER.GET = async (req, res) => {
         handleHttpError(res, error);
     }
 }
+CONTROLLER_SPEAKER.GET_JSON_BY_EVENT = async (req, res) => {
+    try {
+        const { idEvent } = req.params;
+        const speakers = await speakerServices.getSpeakersByEvent(idEvent);
+        //res.json(speakers);
+        const jsonContent = JSON.stringify(speakers); // Convertir objeto a JSON con formato
+        const fileName = 'speakers.json';
+
+        res.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
+        res.setHeader('Content-Type', 'application/json');
+        res.send(jsonContent);
+    } catch (error) {
+        if (typeof error.code === "number") {
+            handleErrorResponse(res, error.message, error.code);
+            return;
+        }
+        handleHttpError(res, error);
+    }
+}
 
 // uno
 CONTROLLER_SPEAKER.GETONE = async (req, res) => {
