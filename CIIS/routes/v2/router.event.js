@@ -19,7 +19,7 @@ const {
 const { getEvents, getOneEvent } = require("../../controllers/event.controller");
 const { uploadMultipleOrSingleFile } = require("../../middlewares/upload.file");
 const { getGalleryEvent, deleteGalleryEvent } = require("../../controllers/v2/galleryEvent.controller");
-const { getSponsorsByEvent, createSponsorsByEvent } = require("../../controllers/sponsor.controller");
+const { getSponsorsByEvent, createSponsorsByEvent, getSponsorsByEventJSON } = require("../../controllers/sponsor.controller");
 const sponsorCreateDTO = require("../../DTO/sponsor.create.dto");
 const { ConferencebyEvent, getJsonConference } = require("../../controllers/v2/conference.controller");
 const CONTROLLER_SPEAKER = require("../../controllers/v2/speaker.controller");
@@ -60,5 +60,5 @@ eventRouter.route('/:idEvent/sponsors').post(authMid, isAtLeastOrganizer, valida
 eventRouter.route('/:idEvent/conferences').get(ConferencebyEvent)
 eventRouter.route('/:idEvent/conferences/json').get(getJsonConference)
 eventRouter.route('/:idEvent/speakers/json').get(CONTROLLER_SPEAKER.GET_JSON_BY_EVENT)
-
+eventRouter.route('/:idEvent/sponsors/json').get(getSponsorsByEventJSON)
 module.exports = eventRouter;
