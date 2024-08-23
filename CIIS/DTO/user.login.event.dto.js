@@ -16,7 +16,7 @@ const LoginDTOSchema = Type.Object(
     }),
 
     password: Type.String({
-      pattern: "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,16}$",
+      pattern: "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{6,16}$",
       errorMessage: {
         type: "Debe ser un string",
         pattern: "Debe ser un password válido",

@@ -2,7 +2,7 @@ const { Type } = require("@sinclair/typebox");
 const Ajv = require("ajv");
 const addErrors = require("ajv-errors");
 const addFormats = require("ajv-formats");
-const { handleErrorResponse } = require("../middlewares/handleError");
+const { handleErrorResponse, handleErrorResponseV2 } = require("../middlewares/handleError");
 
 // definir schema
 const UserRegisterDtoSchema = Type.Object(
@@ -29,17 +29,17 @@ const UserRegisterDtoSchema = Type.Object(
       },
     }),
     password: Type.String({
-      pattern: "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,16}$",
+      pattern: "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{6,16}$",
       errorMessage: {
         type: "Debe ser un string",
-        pattern: "La contraseña debe tener de 8 a 16 caracteres alfanuméricos",
+        pattern: "La contraseña debe tener de 6 a 16 caracteres alfanuméricos",
       },
     }),
     confPassword: Type.String({
-      pattern: "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,16}$",
+      pattern: "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{6,16}$",
       errorMessage: {
         type: "Debe ser un string",
-        pattern: "La contraseña debe tener de 8 a 16 caracteres alfanuméricos",
+        pattern: "La contraseña debe tener de 6 a 16 caracteres alfanuméricos",
       },
     }),
     dni: Type.String({
@@ -102,10 +102,10 @@ const UserCheckEmailCodeDto = Type.Object(
 const UserPasswordDto = Type.Object(
   {
     password: Type.String({
-      pattern: "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,16}$",
+      pattern: "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{6,16}$",
       errorMessage: {
         type: "Debe ser un string",
-        pattern: "La contraseña debe tener de 8 a 16 caracteres alfanuméricos",
+        pattern: "La contraseña debe tener de 6 a 16 caracteres alfanuméricos",
       },
     }),
     email: {
@@ -138,8 +138,9 @@ const userRegisterDTO = (req, res, next) => {
   const isDTOValid = validateUserSchema(req.body);
   console.log(isDTOValid)
   if (!isDTOValid) {
-    const errors = validateUserSchema.errors.map((error) => error.message);
-    handleErrorResponse(res, errors, 400);
+    const errors = new Set(validateUserSchema.errors.map((error) => error.message));
+    //handleErrorResponse(res, errors, 400);
+    handleErrorResponseV2(res, [...errors].join("\n"), 400);
     return;
   }
 
@@ -174,8 +175,9 @@ const userPasswordDTO = (req, res, next) => {
   const isDTOValid = validatePasswordSchema(req.body);
 
   if (!isDTOValid) {
-    const errors = validatePasswordSchema.errors.map((error) => error.message);
-    handleErrorResponse(res, errors, 400);
+    const errors = new Set(validatePasswordSchema.errors.map((error) => error.message));
+    //handleErrorResponse(res, errors, 400);
+    handleErrorResponseV2(res, [...errors].join("\n"), 400);
     return;
   }
 

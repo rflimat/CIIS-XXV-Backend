@@ -23,10 +23,10 @@ const userUpdateDTOSchema = Type.Object({
         },
     })),
     password: Type.Optional(Type.String({
-        pattern: "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,16}$",
+        pattern: "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{6,16}$",
         errorMessage: {
             type: "Debe ser un string",
-            pattern: "La contraseña debe tener de 8 a 16 caracteres alfanuméricos",
+            pattern: "La contraseña debe tener de 6 a 16 caracteres alfanuméricos",
         },
     })),
     phone: Type.Optional(Type.String({

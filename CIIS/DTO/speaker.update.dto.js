@@ -14,7 +14,7 @@ const speakerUpdateDTOSchema = Type.Object({
     minLength: 1,
     errorMessage: "El apellido no es válido",
   })),
-  role: Type.Optional(Type.String({
+  /*role: Type.Optional(Type.String({
     pattern: "^[a-zA-ZáéíóúÁÉÍÓÚñÑ '-]+$",
     minLength: 1,
     errorMessage: "La profesión no es válida.",
@@ -22,7 +22,7 @@ const speakerUpdateDTOSchema = Type.Object({
   workplace: Type.Optional(Type.String({
     minLength: 1,
     errorMessage: "El lugar de trabajo no es válido",
-  })),
+  })),*/
   nationality: Type.Optional(Type.String({
     pattern: "^[a-zA-ZáéíóúÁÉÍÓÚñÑ '-]+$",
     minLength: 1,
@@ -48,10 +48,10 @@ const speakerUpdateDTOSchema = Type.Object({
     minLength: 1,
     errorMessage: "Telefono no válido",
   })),
-  degree: Type.Optional(Type.String({
+  /*degree: Type.Optional(Type.String({
     minLength: 1,
     errorMessage: "Grado no válido",
-  })),
+  })),*/
   trajectory: Type.Optional(Type.String({
     minLength: 1,
     errorMessage: "Trayectoria no válida",
@@ -69,7 +69,7 @@ const speakerUpdateDTOSchema = Type.Object({
 
 },
   {
-    additionalProperties: false,
+    additionalProperties: true,
     errorMessage: {
       additionalProperties: "El formato no es válido",
     },

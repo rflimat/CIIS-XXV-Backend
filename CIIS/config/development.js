@@ -5,9 +5,9 @@ module.exports = {
   },
   database: {
     host: process.env.DB_HOST || "localhost",
-    user: process.env.DB_USER || "usuario",
+    user: process.env.DB_USER || "root",
     name: process.env.DB_NAME || "app_ciis",
-    password: process.env.DB_PASSWORD || "usuario",
+    password: process.env.DB_PASSWORD || "",
     port: process.env.DB_SERVER_PORT || "3306",
   },
   secret_key: {

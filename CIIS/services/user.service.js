@@ -240,7 +240,7 @@ const getUsers = async () => {
           email: user.email_user,
           phone: user.phone_user,
           career: user.university_career_user,
-          studyCenter: user.study_center_user,
+          studycenter: user.study_center_user,
           role: {
             name: user.role.name_role  // Añadir el nombre del rol aquí
           }
@@ -282,7 +282,7 @@ const getOneUser = async (id) => {
         phone: user.phone_user,
         email: user.email_user,
         career: user.university_career_user,
-        studyCenter: user.study_center_user,
+        studycenter: user.study_center_user,
         role: {
           id: user.role.id_role,
           name: user.role.name_role
@@ -333,9 +333,11 @@ const createNewUser = async (userData) => {
         dni_user: userData.dni,
         role_id: userData.role, // asistente
         university_career_user: userData.career,
-        study_center_user: userData.studyCenter,
+        study_center_user: userData.studycenter,
         password_user: await encrypt(userData.password),
         phone_user: userData.phone,
+        plan_ciis: userData.plan_ciis,
+        plan_postmaster: userData.plan_postmaster
       });
 
       await sendMail(userData.email, "Registro exitoso", email_registro);

@@ -196,24 +196,24 @@ const registers = {
 };
 
 const registersPostmaster = {
-  op1: (req, res) => {
+  estudiantesesis: (req, res) => {
     if (!req.files || Object.keys(req.files).length != 2) {
       return res.status(400).send("Hace falta los archivos requeridos");
     }
 
     if (req.files.payment_doc && req.files.scholar_doc) {
       req.files.payment_doc
-        .mv(path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-payment.png`))
+        .mv(path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-payment.${req.files.payment_doc.name.split(".")[1]}`))
         .then(() =>
           req.files.scholar_doc.mv(
-            path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-scholar.png`)
+            path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-scholar.${req.files.scholar_doc.name.split(".")[1]}`)
           )
         )
         .then(() => {
           Reservation.create({
             num_voucher: null,
-            dir_voucher: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-payment.png`,
-            dir_fileuniversity: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-scholar.png`,
+            dir_voucher: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-payment.${req.files.payment_doc.name.split(".")[1]}`,
+            dir_fileuniversity: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-scholar.${req.files.scholar_doc.name.split(".")[1]}`,
             enrollment_status: 0,
             active: false,
             user_id: req.user.id,
@@ -237,24 +237,24 @@ const registersPostmaster = {
         });
     }
   },
-  op2: (req, res) => {
+  estudiantevisitante: (req, res) => {
     if (!req.files || Object.keys(req.files).length != 2) {
       return res.status(400).send("Hace falta los archivos requeridos");
     }
 
     if (req.files.payment_doc && req.files.scholar_doc) {
       req.files.payment_doc
-        .mv(path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-payment.png`))
+        .mv(path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-payment.${req.files.payment_doc.name.split(".")[1]}`))
         .then(() =>
           req.files.scholar_doc.mv(
-            path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-scholar.png`)
+            path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-scholar.${req.files.scholar_doc.name.split(".")[1]}`)
           )
         )
         .then(() => {
           Reservation.create({
             num_voucher: null,
-            dir_voucher: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-payment.png`,
-            dir_fileuniversity: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-scholar.png`,
+            dir_voucher: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-payment.${req.files.payment_doc.name.split(".")[1]}`,
+            dir_fileuniversity: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-scholar.${req.files.scholar_doc.name.split(".")[1]}`,
             enrollment_status: 0,
             active: false,
             user_id: req.user.id,
@@ -278,7 +278,7 @@ const registersPostmaster = {
         });
     }
   },
-  op3: (req, res) => {
+  publicogeneral: (req, res) => {
     if (!req.files || Object.keys(req.files).length === 0) {
       return res.status(400).send("Hace falta los archivos requeridos");
     }
@@ -291,7 +291,7 @@ const registersPostmaster = {
         } else {
           Reservation.create({
             num_voucher: null,
-            dir_voucher: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-payment.png`,
+            dir_voucher: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-payment.${req.files.payment_doc.name.split(".")[1]}`,
             dir_fileuniversity: null,
             enrollment_status: 0,
             active: false,

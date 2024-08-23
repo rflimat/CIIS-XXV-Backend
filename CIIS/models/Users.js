@@ -48,6 +48,14 @@ const Users = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    plan_ciis: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    plan_postmaster: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     allowedAttendance: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

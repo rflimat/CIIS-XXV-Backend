@@ -18,6 +18,7 @@ const {
   getConferenceByDayByUser,
   checkAllowedAttendanceToUser,
 } = require("../../services/conference.attendance.service");
+const fs = require("fs");
 
 const { updateReservation } = require("../../services/registration.service");
 const { updateUser } = require("../../services/user.service");
@@ -379,6 +380,14 @@ const getJsonConference = async (req, res) => {
     }, {});
     const contenidoJSON = JSON.stringify(Object.values(eventosPorFecha))
     const fileName = 'cronograma.json';
+
+    fs.writeFile(fileName, contenidoJSON, (err) => { 
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(`${fileName} creado!`);
+      }
+    })
 
     res.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
     res.setHeader('Content-Type', 'application/json');

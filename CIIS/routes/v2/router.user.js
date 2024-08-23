@@ -34,35 +34,38 @@ routerUser.route("/users").post(authMid, isAdmin, userCreateDTO, createUser)
 routerUser.route("/user").post(userRegisterDTO, registerUser);
 
 routerUser.route("/user/inscription").get(authMid, async (req, res) => {
-  const { event } = req.query;
+  const { type_event, event } = req.query;
+  let inscripciones = {
+    status: null
+  }
+
   try {
-    let inscripciones = {
-      talleres: [],
-      ciis: null,
-    };
-
-    let talleres = await TallerInscriptionSQL.findAll({
-      where: {
-        relatedUser: req.user.id,
-      },
-    });
-
-    inscripciones.talleres = await Promise.all(
-      talleres.map(async (tll) => {
-        let taller = new Taller();
-        await taller.load(tll.relatedTaller);
-        taller.state = tll.state;
-
-        return Promise.resolve(taller);
-      })
-    );
-
-    let ciis = (
+    if (type_event === "ciis") {
+      inscripciones.talleres = [];
+  
+      let talleres = await TallerInscriptionSQL.findAll({
+        where: {
+          relatedUser: req.user.id,
+        },
+      });
+  
+      inscripciones.talleres = await Promise.all(
+        talleres.map(async (tll) => {
+          let taller = new Taller();
+          await taller.load(tll.relatedTaller);
+          taller.state = tll.state;
+  
+          return Promise.resolve(taller);
+        })
+      );
+    }
+    
+    let status = (
       await Reservation.findOne({
         where: { user_id: req.user.id, event_id: event },
       })
     )?.dataValues;
-    inscripciones.ciis = ciis ? ciis.enrollment_status : 3;
+    inscripciones.status = status ? status.enrollment_status : 3;
     res.send(inscripciones);
   } catch (err) {
     console.log(err);
@@ -200,9 +203,9 @@ routerUser.route("/user/restore").post(async (req, res) => {
 
 routerUser.route("/user/studycenter").patch(authMid, async (req, res) => {
   try {
-    const { studyCenter } = req.body;
+    const { studycenter } = req.body;
     Users.update(
-      { study_center_user: studyCenter },
+      { study_center_user: studycenter },
       { where: { id_user: req.user.id } }
     );
     res.status(201).json({ msg: "ok" });

@@ -3,6 +3,7 @@ const speakerServices = require("../../services/speaker.service")
 const sequelize = require("../../config/database");
 const { getDateTime } = require("../../utils/getdate.utils");
 const { createRecordAudit } = require("../../services/audit.log.service");
+const fs = require("fs");
 
 const CONTROLLER_SPEAKER = {};
 
@@ -26,6 +27,14 @@ CONTROLLER_SPEAKER.GET_JSON_BY_EVENT = async (req, res) => {
         //res.json(speakers);
         const jsonContent = JSON.stringify(speakers); // Convertir objeto a JSON con formato
         const fileName = 'speakers.json';
+
+        fs.writeFile(fileName, jsonContent, (err) => { 
+            if (err) {
+              console.log(err);
+            } else {
+              console.log(`${fileName} creado!`);
+            }
+        });
 
         res.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
         res.setHeader('Content-Type', 'application/json');

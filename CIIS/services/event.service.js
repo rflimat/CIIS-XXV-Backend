@@ -47,7 +47,9 @@ const getCountAttendances = async (idEvent, idUser) => {
 
 const getEvents = async (query) => {
   if (!Object.keys(query).length) {
-    const events = await Event.findAll();
+    const events = await Event.findAll({
+      order: [['start_date', 'DESC']]
+    });
     return events;
   }
 
@@ -64,6 +66,7 @@ const getEvents = async (query) => {
     where: whereCondition,
     offset: parseInt(offset),
     limit: parseInt(limit),
+    order: [['start_date', 'DESC']]
   });
 
   const totalPages = Math.ceil(count / limit);

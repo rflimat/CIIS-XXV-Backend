@@ -49,6 +49,10 @@ CONTROLLER_SESSION.POST = (req, res) => {
         name: user.name_user,
         phone: user.phone_user,
         lastname: user.lastname_user,
+        studycenter: user.study_center_user,
+        career: user.university_career_user,
+        plan_ciis: user.plan_ciis,
+        plan_postmaster: user.plan_postmaster,
         inscriptions: {
           ciis: inscription ? inscription.dataValues : false,
         },

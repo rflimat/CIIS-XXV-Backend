@@ -15,15 +15,15 @@ const speakerCreateDTOSchema = Type.Object(
       minLength: 1,
       errorMessage: "El apellido no es válido",
     }),
-    role: Type.String({
+    /*role: Type.String({
       pattern: "^[a-zA-ZáéíóúÁÉÍÓÚñÑ '-]+$",
       minLength: 1,
       errorMessage: "La profesión no es válida.",
-    }),
-    workplace: Type.String({
+    }),*/
+    /*workplace: Type.String({
       minLength: 1,
       errorMessage: "El lugar de trabajo no es válido",
-    }),
+    }),*/
     nationality: Type.String({
       pattern: "^[a-zA-ZáéíóúÁÉÍÓÚñÑ '-]+$",
       minLength: 1,
