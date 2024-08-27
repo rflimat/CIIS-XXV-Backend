@@ -26,4 +26,14 @@ const isAtLeastOrganizer = (req, res, next) => {
   else return res.status(403).send(http["403"]);
 };
 
-module.exports = { authMid, isAdmin, isAtLeastOrganizer };
+const isAtLeastCounter = (req, res, next) => {
+  if ([1, 4].includes(req.user.role)) next();
+  else return res.status(403).send(http["403"]);
+};
+
+const isAtLeastContentManager = (req, res, next) => {
+  if ([1, 5].includes(req.user.role)) next();
+  else return res.status(403).send(http["403"]);
+};
+
+module.exports = { authMid, isAdmin, isAtLeastOrganizer, isAtLeastCounter, isAtLeastContentManager };

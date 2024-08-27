@@ -15,6 +15,22 @@ const Sponsors = sequelize.define("sponsor",{
     dir_img_sponsor:{
         type:DataTypes.STRING,
         allowNull:false,
+    },
+    web_sponsor:{
+        type:DataTypes.STRING,
+        allowNull:true,
+    },
+    facebook_sponsor:{
+        type:DataTypes.STRING,
+        allowNull:true,
+    },
+    youtube_sponsor:{
+        type:DataTypes.STRING,
+        allowNull:true,
+    },
+    linkedin_sponsor:{
+        type:DataTypes.STRING,
+        allowNull:true,
     }
 },{
     timestamps:false

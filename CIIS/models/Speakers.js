@@ -34,7 +34,7 @@ const Speakers = sequelize.define(
       allowNull: true,
     },
     about_profile_speaker: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     dir_img_speaker: {

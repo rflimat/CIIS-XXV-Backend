@@ -15,6 +15,7 @@ const {
   authMid,
   isAtLeastOrganizer,
   isAdmin,
+  isAtLeastContentManager,
 } = require("../../middlewares/v2/auth");
 const {
   validateExistUser,
@@ -39,10 +40,10 @@ conferenceRouter.route("/:id").post(authMid, isAdmin, POST_ANY_ATTENDANCE);
 
 
 // CRUD
-conferenceRouter.route("/").post(authMid, isAtLeastOrganizer, createConference)
+conferenceRouter.route("/").post(authMid, isAtLeastContentManager, createConference)
 conferenceRouter.route("/").get(getConferences)
 conferenceRouter.route("/:idConference").get(getOneConference)
-conferenceRouter.route("/:idConference").put(authMid, isAtLeastOrganizer, updateConference)
-conferenceRouter.route("/:idConference").delete(authMid, isAtLeastOrganizer, deleteConference)
+conferenceRouter.route("/:idConference").put(authMid, isAtLeastContentManager, updateConference)
+conferenceRouter.route("/:idConference").delete(authMid, isAdmin, deleteConference)
 
 module.exports = conferenceRouter;

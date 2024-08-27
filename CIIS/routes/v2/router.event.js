@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const eventRouter = Router();
 
-const { authMid, isAtLeastOrganizer, isAdmin } = require("../../middlewares/v2/auth");
+const { authMid, isAdmin } = require("../../middlewares/v2/auth");
 const {
   validateExistUser,
   validateExistEvent,
@@ -38,16 +38,16 @@ eventRouter.route("/").get(getEvents)
 // GET ONE EVENT
 eventRouter.route("/:idEvent").get(getOneEvent)
 // POST EVENT
-eventRouter.route("/").post(authMid, isAtLeastOrganizer, createEvent)
+eventRouter.route("/").post(authMid, isAdmin, createEvent)
 // PUT EVENT
-eventRouter.route("/:idEvent").put(authMid, isAtLeastOrganizer, updateEvent)
+eventRouter.route("/:idEvent").put(authMid, isAdmin, updateEvent)
 // DELETE EVENT
 eventRouter.route("/:id").delete(authMid, isAdmin, deleteEvent)
 
-eventRouter.route("/:id/report").get(isAtLeastOrganizer, getEventReport);
+eventRouter.route("/:id/report").get(isAdmin, getEventReport);
 
 
-eventRouter.route('/:idEvent/gallery').post(authMid, isAtLeastOrganizer, validateExistEvent, uploadMultipleOrSingleFile("image", ["jpg", "jpeg", "png"]), validateFormDataToUploadImages(["name", "priority", "image"]), createGalleryEvent);
+eventRouter.route('/:idEvent/gallery').post(authMid, isAdmin, validateExistEvent, uploadMultipleOrSingleFile("image", ["jpg", "jpeg", "png"]), validateFormDataToUploadImages(["name", "priority", "image"]), createGalleryEvent);
 eventRouter.route('/:idEvent/gallery').get(getGalleryEvent)
 eventRouter.route("/gallery/:id").delete(authMid, isAdmin, deleteGalleryEvent)
 
@@ -55,7 +55,7 @@ eventRouter.route("/gallery/:id").delete(authMid, isAdmin, deleteGalleryEvent)
 // sponsors
 
 eventRouter.route('/:idEvent/sponsors').get(getSponsorsByEvent);
-eventRouter.route('/:idEvent/sponsors').post(authMid, isAtLeastOrganizer, validateFileOptional("avatar", ["jpg", "jpeg", "png"]), sponsorCreateDTO, createSponsorsByEvent);
+eventRouter.route('/:idEvent/sponsors').post(authMid, isAdmin, validateFileOptional("avatar", ["jpg", "jpeg", "png"]), sponsorCreateDTO, createSponsorsByEvent);
 
 eventRouter.route('/:idEvent/conferences').get(ConferencebyEvent)
 eventRouter.route('/:idEvent/conferences/json').get(getJsonConference)

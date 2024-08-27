@@ -3,7 +3,7 @@ const Users = require("../../models/Users");
 const http = require("../../utils/http.msg");
 const { encrypt } = require("../../utils/password.utils");
 const { sendMail } = require("../../utils/send.mail.utils");
-const { authMid, isAdmin, isAtLeastOrganizer } = require("../../middlewares/v2/auth");
+const { authMid, isAdmin } = require("../../middlewares/v2/auth");
 const TallerInscriptionSQL = require("../../models/Taller/TallerInscription");
 const Taller = require("../../classes/Taller");
 const Reservation = require("../../models/Reservation");
@@ -21,9 +21,9 @@ const { getUsers, updateUser, getOneUser, deleteUser, registerUser, createUser }
 const { userCreateDTO } = require("../../DTO/user.create.dto");
 
 
-routerUser.route("/users").get(authMid, isAtLeastOrganizer, getUsers)
-routerUser.route("/users/:id").put(authMid, isAtLeastOrganizer, userUpdateDTO, updateUser)
-routerUser.route("/users/:id").get(authMid, isAtLeastOrganizer, getOneUser)
+routerUser.route("/users").get(authMid, isAdmin, getUsers)
+routerUser.route("/users/:id").put(authMid, isAdmin, userUpdateDTO, updateUser)
+routerUser.route("/users/:id").get(authMid, isAdmin, getOneUser)
 routerUser.route("/users/:id").delete(authMid, isAdmin, deleteUser)
 routerUser.route("/users").post(authMid, isAdmin, userCreateDTO, createUser)
 // 2024

@@ -57,7 +57,7 @@ const updateUser = async (req, res) => {
         const { id } = await req.params
         const user = new userDTO(name, lastname, email, dni, phone, career, studycenter)
         if (role) {
-            user.role = role.id
+            user.role = role;
         }
         if (password) {
             user.password = await encrypt(password);

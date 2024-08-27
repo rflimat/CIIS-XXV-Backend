@@ -36,7 +36,7 @@ const UserCreateDtoSchema = Type.Object(
             },
         }),
         role: Type.String({
-            pattern: "^(1|2|3)$",
+            pattern: "^(1|2|3|4|5)$",
             errorMessage: {
                 type: "Debe ser un string",
                 pattern: "Debe ser un rol existente",
