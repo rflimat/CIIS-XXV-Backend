@@ -17,21 +17,40 @@ const getSponsorsByEvent = async (req, res) => {
         handleHttpError(res, error);
     }
 }
-const createSponsorsByEvent = async (req,res) =>{
-    const transaction = await sequelize.transaction();
-    try{
-        const {idEvent} =req.params;
-        const {name} = req.body;
-        const {files} = req;
-        const sponsorObject ={ 
-            name_sponsor : name ,
-            event_id : idEvent
+const getSponsorsByEventJSON = async (req, res) => {
+    try {
+        const { idEvent } = req.params;
+        const sponsors = await sponsorService.getSponsorsByEvent(idEvent);
+        //res.json(sponsors);
+        const jsonContent = JSON.stringify(sponsors); // Convertir objeto a JSON con formato
+        const fileName = 'sponsors.json';
+
+        res.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
+        res.setHeader('Content-Type', 'application/json');
+        res.send(jsonContent);
+    } catch (error) {
+        if (typeof error.code === "number") {
+            handleErrorResponse(res, error.message, error.code);
+            return;
         }
-        let logo={}
-        if(files && files.logo != undefined)
-            logo=files.logo;
-        const sponsor = await sponsorService.createSponsorsByEvent(sponsorObject,logo,transaction);
-        
+        handleHttpError(res, error);
+    }
+}
+const createSponsorsByEvent = async (req, res) => {
+    const transaction = await sequelize.transaction();
+    try {
+        const { idEvent } = req.params;
+        const { name } = req.body;
+        const { files } = req;
+        const sponsorObject = {
+            name_sponsor: name,
+            event_id: idEvent
+        }
+        let logo = {}
+        if (files && files.logo != undefined)
+            logo = files.logo;
+        const sponsor = await sponsorService.createSponsorsByEvent(sponsorObject, logo, transaction);
+
         const recordAuditObject = {
             table_name: "sponsor",
             action_type: "create",
@@ -44,7 +63,7 @@ const createSponsorsByEvent = async (req,res) =>{
         await createRecordAudit(recordAuditObject, transaction);
         await transaction.commit();
         res.status(201).json(sponsor);
-    } catch(error){
+    } catch (error) {
         await transaction.rollback();
         if (typeof error.code === "number") {
             handleErrorResponse(res, error.message, error.code);
@@ -55,5 +74,6 @@ const createSponsorsByEvent = async (req,res) =>{
 }
 module.exports = {
     getSponsorsByEvent,
-    createSponsorsByEvent
+    createSponsorsByEvent,
+    getSponsorsByEventJSON
 };
