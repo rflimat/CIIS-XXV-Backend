@@ -41,12 +41,16 @@ const getOneSponsor = async (req, res) => {
 const updateSponsor = async (req, res) => {
     const transaction = await sequelize.transaction();
     try {
-        const { name, idEvent } = req.body
+        const { name, webSponsor, facebookSponsor, youtubeSponsor, linkedinSponsor, idEvent } = req.body
         const { idSponsor } = req.params
         const { files } = req
 
         let sponsorObj = {}
         if (name !== undefined) sponsorObj.name_sponsor = name;
+        if (webSponsor !== undefined) sponsorObj.web_sponsor = webSponsor;
+        if (facebookSponsor !== undefined) sponsorObj.facebook_sponsor = facebookSponsor;
+        if (youtubeSponsor !== undefined) sponsorObj.youtube_sponsor = youtubeSponsor;
+        if (linkedinSponsor !== undefined) sponsorObj.linkedin_sponsor = linkedinSponsor;
         let logo = {}
         if (files && files.logo != undefined) {
             logo = files.logo;

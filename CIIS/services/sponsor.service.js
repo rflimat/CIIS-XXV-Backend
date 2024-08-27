@@ -28,7 +28,11 @@ const getSponsorsByEvent = async (id) => {
             return {
                 id: sponsor.id_sponsor,
                 name: sponsor.name_sponsor,
-                img: sponsor.dir_img_sponsor
+                img: sponsor.dir_img_sponsor,
+                webSponsor: sponsor.web_sponsor,
+                facebookSponsor: sponsor.facebook_sponsor,
+                youtubeSponsor: sponsor.youtube_sponsor,
+                linkedinSponsor: sponsor.linkedin_sponsor
             };
         });
         resolve(sponsorsMap);
@@ -73,6 +77,10 @@ const getSponsorsService = async (id = null) => {
                         id: sponsor.id_sponsor,
                         name: sponsor.name_sponsor,
                         img: sponsor.dir_img_sponsor,
+                        webSponsor: sponsor.web_sponsor,
+                        facebookSponsor: sponsor.facebook_sponsor,
+                        youtubeSponsor: sponsor.youtube_sponsor,
+                        linkedinSponsor: sponsor.linkedin_sponsor,
                         idEvent: sponsor.event_id
                     }
                 })

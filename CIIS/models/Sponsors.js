@@ -32,7 +32,8 @@ const Sponsors = sequelize.define("sponsor",{
         type:DataTypes.STRING,
         allowNull:true,
     }
-},{
+},
+{
     timestamps:false
 });
 

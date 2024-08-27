@@ -14,4 +14,9 @@ RouterInscription.route("/event/:event/reservation/ciis/:filename").get(
   CONTROLLER_INSCRIPTION.GET_FILENAME
 );
 
+RouterInscription.route("/event/:event/reservation/postmaster/:filename").get(
+  isAdmin,
+  CONTROLLER_INSCRIPTION.GET_FILENAME
+);
+
 module.exports = RouterInscription;

@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const eventRouter = Router();
 
-const { authMid, isAdmin } = require("../../middlewares/v2/auth");
+const { authMid, isAdmin, isAtLeastContentManager } = require("../../middlewares/v2/auth");
 const {
   validateExistUser,
   validateExistEvent,
@@ -55,7 +55,7 @@ eventRouter.route("/gallery/:id").delete(authMid, isAdmin, deleteGalleryEvent)
 // sponsors
 
 eventRouter.route('/:idEvent/sponsors').get(getSponsorsByEvent);
-eventRouter.route('/:idEvent/sponsors').post(authMid, isAdmin, validateFileOptional("avatar", ["jpg", "jpeg", "png"]), sponsorCreateDTO, createSponsorsByEvent);
+eventRouter.route('/:idEvent/sponsors').post(authMid, isAtLeastContentManager, validateFileOptional("avatar", ["jpg", "jpeg", "png"]), sponsorCreateDTO, createSponsorsByEvent);
 
 eventRouter.route('/:idEvent/conferences').get(ConferencebyEvent)
 eventRouter.route('/:idEvent/conferences/json').get(getJsonConference)
