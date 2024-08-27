@@ -26,9 +26,14 @@ CONTROLLER_SPEAKER.GET_JSON_BY_EVENT = async (req, res) => {
         const speakers = await speakerServices.getSpeakersByEvent(idEvent);
         //res.json(speakers);
         const jsonContent = JSON.stringify(speakers); // Convertir objeto a JSON con formato
+        const path = "./uploads/public/reports/" + idEvent + "/";
         const fileName = 'speakers.json';
 
-        fs.writeFile(fileName, jsonContent, (err) => { 
+        if (!fs.existsSync(path)) {
+            fs.mkdirSync(path, {recursive: true});
+        }
+
+        fs.writeFile(`${path}/${fileName}`, jsonContent, (err) => { 
             if (err) {
               console.log(err);
             } else {

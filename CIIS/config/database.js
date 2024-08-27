@@ -7,6 +7,7 @@ const sequelize = new Sequelize(
   {
     host: database.host,
     port: database.port,
+    timezone: "+00:00",
     dialect: "mysql",
     dialectOptions: {
       //   ssl: {

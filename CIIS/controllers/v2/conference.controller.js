@@ -6,8 +6,8 @@ const {
 const ConferenceAttendance = require("../../models/ConferenceAttendance");
 const Reservation = require("../../models/Reservation");
 const Users = require("../../models/Users");
-const eventService = require("../../services/event.service")
-const speakerService = require("../../services/speaker.service")
+const eventService = require("../../services/event.service");
+const speakerService = require("../../services/speaker.service");
 const {
   createOneConferenceAttendance,
   searchRegisterByEventAndUserV2,
@@ -23,7 +23,15 @@ const fs = require("fs");
 const { updateReservation } = require("../../services/registration.service");
 const { updateUser } = require("../../services/user.service");
 const http = require("../../utils/http.msg");
-const { createConferenceService, getConferencesService, updateConferenceService, deleteConferenceService, getConferenceByEvent, getConferenceService, getConferenceByEventOrder } = require("../../services/conference.service");
+const {
+  createConferenceService,
+  getConferencesService,
+  updateConferenceService,
+  deleteConferenceService,
+  getConferenceByEvent,
+  getConferenceService,
+  getConferenceByEventOrder,
+} = require("../../services/conference.service");
 
 const registerAttendanceByUser = async (req, res) => {
   const transaction = await sequelize.transaction();
@@ -217,8 +225,8 @@ const POST_ANY_ATTENDANCE = async (req, res) => {
 
 const getConferences = async (req, res) => {
   try {
-    const conferences = await getConferencesService()
-    res.json(conferences)
+    const conferences = await getConferencesService();
+    res.json(conferences);
   } catch (error) {
     if (typeof error.code == "number") {
       handleErrorResponseV2(res, error.message, error.code);
@@ -226,21 +234,17 @@ const getConferences = async (req, res) => {
     }
     handleHttpErrorV2(res, error);
   }
-}
+};
 
 const getOneConference = async (req, res) => {
   try {
-    const { idConference } = req.params
-    const conferences = await getConferenceService(idConference)
+    const { idConference } = req.params;
+    const conferences = await getConferenceService(idConference);
     if (!conferences) {
-      handleErrorResponseV2(
-        res,
-        "Conferencia no existente",
-        404
-      );
+      handleErrorResponseV2(res, "Conferencia no existente", 404);
       return;
     }
-    res.json(conferences)
+    res.json(conferences);
   } catch (error) {
     if (typeof error.code == "number") {
       handleErrorResponseV2(res, error.message, error.code);
@@ -248,14 +252,14 @@ const getOneConference = async (req, res) => {
     }
     handleHttpErrorV2(res, error);
   }
-}
+};
 
 const ConferencebyEvent = async (req, res) => {
   try {
-    const { idEvent } = req.params
-    const event = await eventService.getOneEvent(idEvent)
-    result = await getConferenceByEvent(idEvent)
-    res.json(result)
+    const { idEvent } = req.params;
+    const event = await eventService.getOneEvent(idEvent);
+    result = await getConferenceByEvent(idEvent);
+    res.json(result);
   } catch (error) {
     if (typeof error.code == "number") {
       handleErrorResponseV2(res, error.message, error.code);
@@ -263,15 +267,23 @@ const ConferencebyEvent = async (req, res) => {
     }
     handleHttpErrorV2(res, error);
   }
-}
+};
 
 const createConference = async (req, res) => {
   const transaction = await sequelize.transaction();
   try {
-    const { topic, startDateTime, expDateTime, isActive, isMorning, idEvent, idSpeaker } = req.body
-    const event = await eventService.getOneEvent(idEvent)
-    const dataSpeaker = await speakerService.getSpeaker(idSpeaker)
-    const speaker = dataSpeaker.dataValues
+    const {
+      topic,
+      startDateTime,
+      expDateTime,
+      isActive,
+      isMorning,
+      idEvent,
+      idSpeaker,
+    } = req.body;
+    const event = await eventService.getOneEvent(idEvent);
+    const dataSpeaker = await speakerService.getSpeaker(idSpeaker);
+    const speaker = dataSpeaker.dataValues;
 
     const conferenceObj = {
       topic_conference: topic,
@@ -280,9 +292,9 @@ const createConference = async (req, res) => {
       is_active: isActive ?? 1,
       is_morning: isMorning ?? 0,
       event_id: event.id_event,
-      speaker_id: speaker.id_speaker
-    }
-    result = await createConferenceService(conferenceObj, transaction)
+      speaker_id: speaker.id_speaker,
+    };
+    result = await createConferenceService(conferenceObj, transaction);
 
     await transaction.commit();
     res.send({
@@ -296,32 +308,45 @@ const createConference = async (req, res) => {
     }
     handleHttpErrorV2(res, error);
   }
-}
+};
 
 const updateConference = async (req, res) => {
   const transaction = await sequelize.transaction();
   try {
-    const { topic, startDateTime, expDateTime, isActive, isMorning, idEvent, idSpeaker } = req.body
-    const { idConference } = req.params
+    const {
+      topic,
+      startDateTime,
+      expDateTime,
+      isActive,
+      isMorning,
+      idEvent,
+      idSpeaker,
+    } = req.body;
+    const { idConference } = req.params;
 
-
-    let conferenceObj = {}
+    let conferenceObj = {};
     if (topic !== undefined) conferenceObj.topic_conference = topic;
-    if (startDateTime !== undefined) conferenceObj.start_date_conference = startDateTime
-    if (expDateTime !== undefined) conferenceObj.exp_date_conference = expDateTime
-    if (isActive !== undefined) conferenceObj.is_active = isActive
-    if (isMorning !== undefined) conferenceObj.is_morning = isMorning
+    if (startDateTime !== undefined)
+      conferenceObj.start_date_conference = startDateTime;
+    if (expDateTime !== undefined)
+      conferenceObj.exp_date_conference = expDateTime;
+    if (isActive !== undefined) conferenceObj.is_active = isActive;
+    if (isMorning !== undefined) conferenceObj.is_morning = isMorning;
     if (idEvent !== undefined) {
-      const event = await eventService.getOneEvent(idEvent)
-      conferenceObj.event_id = event.id_event
+      const event = await eventService.getOneEvent(idEvent);
+      conferenceObj.event_id = event.id_event;
     }
     if (idSpeaker !== undefined) {
-      const dataSpeaker = await speakerService.getSpeaker(idSpeaker)
-      const speaker = dataSpeaker.dataValues
-      conferenceObj.speaker_id = speaker.id_speaker
+      const dataSpeaker = await speakerService.getSpeaker(idSpeaker);
+      const speaker = dataSpeaker.dataValues;
+      conferenceObj.speaker_id = speaker.id_speaker;
     }
 
-    result = await updateConferenceService(idConference, conferenceObj, transaction)
+    result = await updateConferenceService(
+      idConference,
+      conferenceObj,
+      transaction
+    );
 
     await transaction.commit();
     res.send({
@@ -335,7 +360,7 @@ const updateConference = async (req, res) => {
     }
     handleHttpErrorV2(res, error);
   }
-}
+};
 
 const deleteConference = async (req, res) => {
   try {
@@ -349,27 +374,27 @@ const deleteConference = async (req, res) => {
     }
     handleErrorResponseV2(res, error);
   }
-}
-
+};
 
 const getJsonConference = async (req, res) => {
   try {
-    const { idEvent } = req.params
-    const event = await eventService.getOneEvent(idEvent)
-    data = await getConferenceByEventOrder(idEvent)
+    const { idEvent } = req.params;
+    const event = await eventService.getOneEvent(idEvent);
+    data = await getConferenceByEventOrder(idEvent);
 
     const eventosPorFecha = data.reduce((acc, evento) => {
-      const date = new Date(evento.start)
+      const date = new Date(evento.start);
       const fecha = date.toLocaleDateString();
 
       if (!acc[fecha]) {
         acc[fecha] = {
-          day: date.toLocaleDateString('es-ES', { weekday: 'long' }),
+          day: date.toLocaleDateString("es-ES", { weekday: "long" }),
           date: date,
           early: [],
-          late: []
+          late: [],
         };
       }
+
       if (evento.isMorning === true) {
         acc[fecha].early.push(evento);
       } else {
@@ -378,19 +403,25 @@ const getJsonConference = async (req, res) => {
 
       return acc;
     }, {});
-    const contenidoJSON = JSON.stringify(Object.values(eventosPorFecha))
-    const fileName = 'cronograma.json';
+    const contenidoJSON = JSON.stringify(Object.values(eventosPorFecha));
 
-    fs.writeFile(fileName, contenidoJSON, (err) => { 
+    const path = "./uploads/public/reports/" + idEvent + "/";
+    const fileName = "cronograma.json";
+
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path, { recursive: true });
+    }
+
+    fs.writeFile(`${path}/${fileName}`, contenidoJSON, (err) => {
       if (err) {
         console.log(err);
       } else {
         console.log(`${fileName} creado!`);
       }
-    })
+    });
 
-    res.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
-    res.setHeader('Content-Type', 'application/json');
+    res.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+    res.setHeader("Content-Type", "application/json");
     res.send(contenidoJSON);
     //res.json(Object.values(eventosPorFecha))
   } catch (error) {
@@ -400,7 +431,7 @@ const getJsonConference = async (req, res) => {
     }
     handleHttpErrorV2(res, error);
   }
-}
+};
 
 module.exports = {
   registerAttendanceByUser,
@@ -413,5 +444,5 @@ module.exports = {
   updateConference,
   deleteConference,
   ConferencebyEvent,
-  getJsonConference
+  getJsonConference,
 };

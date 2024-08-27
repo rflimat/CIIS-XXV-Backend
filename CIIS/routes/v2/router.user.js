@@ -35,11 +35,14 @@ routerUser.route("/user").post(userRegisterDTO, registerUser);
 
 routerUser.route("/user/inscription").get(authMid, async (req, res) => {
   const { type_event, event } = req.query;
+  let prestatus = null;
   let inscripciones = {
     status: null
   }
 
   try {
+    let user = await Users.findOne({where: { id_user: req.user.id}})
+
     if (type_event === "ciis") {
       inscripciones.talleres = [];
   
@@ -58,14 +61,18 @@ routerUser.route("/user/inscription").get(authMid, async (req, res) => {
           return Promise.resolve(taller);
         })
       );
+
+      prestatus = user.plan_ciis.length > 0 ? 3 : 4;
+    } else {
+      prestatus = user.plan_postmaster.length > 0 ? 3 : 4;
     }
-    
+
     let status = (
       await Reservation.findOne({
         where: { user_id: req.user.id, event_id: event },
       })
     )?.dataValues;
-    inscripciones.status = status ? status.enrollment_status : 3;
+    inscripciones.status = status ? status.enrollment_status : prestatus;
     res.send(inscripciones);
   } catch (err) {
     console.log(err);
@@ -115,6 +122,28 @@ routerUser.route("/user/password").patch(authMid, async (req, res) => {
       { password_user: await encrypt(password) },
       { where: { id_user: req.user.id } }
     );
+    res.status(201).json({ msg: "ok" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(http["500"]);
+  }
+});
+routerUser.route("/user/inscription").patch(authMid, async (req, res) => {
+  try {
+    if (req.body.plan_postmaster) {
+      Users.update(
+        { plan_postmaster: req.body.plan_postmaster },
+        { where: { id_user: req.user.id } }
+      );
+    }
+
+    if (req.body.plan_ciis) {
+      Users.update(
+        { plan_postmaster: req.body.plan_postmaster },
+        { where: { id_user: req.user.id } }
+      );
+    }
+    
     res.status(201).json({ msg: "ok" });
   } catch (err) {
     console.log(err);

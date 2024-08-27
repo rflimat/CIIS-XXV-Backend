@@ -32,12 +32,12 @@ CONTROLLER_SESSION.POST = (req, res) => {
           code: 401,
         });
     })
-    .then((user) =>
+    .then((user) => {
       Inscriptions.findOne({
         where: { id_user: user.id_user, activity: "ciis" },
       })
-    )
-    .then((inscription) => {
+    })
+    .then((inscriptions) => {
       let now = new Date();
       now.setHours(now.getHours() + 2);
 
@@ -53,9 +53,7 @@ CONTROLLER_SESSION.POST = (req, res) => {
         career: user.university_career_user,
         plan_ciis: user.plan_ciis,
         plan_postmaster: user.plan_postmaster,
-        inscriptions: {
-          ciis: inscription ? inscription.dataValues : false,
-        },
+        inscriptions,
         tiempoExpiracion: now,
       };
 

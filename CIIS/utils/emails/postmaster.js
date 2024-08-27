@@ -1,4 +1,4 @@
-const bodyEmail=`
+const bodyEmailPostmaster=`
 <head>
   <style>
     body {
@@ -50,13 +50,13 @@ const bodyEmail=`
 <body>
   <div class="container">
     <div class="header">
-      <h2>POSTMASTER XX</h2>
+      <h2>POSTMASTER XXI</h2>
       <h3>Confirmación de Pre-Inscripción</h3>
     </div>
     <div class="content">
       <p>Estimado/a,</p>
       
-      <p>Le escribimos para confirmar que su inscripción ha sido recibida correctamente. Agradecemos su interés en el POSTMASTER XX.</p>
+      <p>Le escribimos para confirmar que su inscripción ha sido recibida correctamente. Agradecemos su interés en el POSTMASTER XXI.</p>
       
       <p>Actualmente estamos procesando las inscripciones y nos comunicaremos con usted a la brevedad para brindarle más detalles y confirmar su participación.</p>
       
@@ -64,11 +64,11 @@ const bodyEmail=`
       
       <p>Si tiene alguna pregunta o necesita más información, no dude en ponerse en contacto con nosotros.</p>
       
-      <p>Gracias de nuevo por su inscripción y esperamos tenerlo/a con nosotros en el POSTMASTER XX.</p>
+      <p>Gracias de nuevo por su inscripción y esperamos tenerlo/a con nosotros en el POSTMASTER XXI.</p>
       
       <p>Atentamente,</p>
       
-      <p>El equipo de tecnología web del CIIS XXIV</p>
+      <p>El equipo de tecnología web del CIIS XXV</p>
     </div>
     <div class="footer">
       <p>No responda a este correo electrónico. Si tiene alguna pregunta, por favor, comuníquese con nosotros a través de los canales indicados en nuestra página web.</p>
@@ -77,4 +77,4 @@ const bodyEmail=`
 </body>
 `;
 
-module.exports=bodyEmail;
+module.exports = { bodyEmailPostmaster }

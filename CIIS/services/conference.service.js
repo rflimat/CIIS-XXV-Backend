@@ -80,7 +80,6 @@ const getConferenceByEventOrder = async (idEvent) => {
         try {
 
             const conferences = await Conferences.findAll({
-                attributes: ['id_conference', 'start_date_conference', 'exp_date_conference', 'topic_conference'],
                 where: { event_id: idEvent },
                 order: [
                     ['is_morning', 'DESC'],
