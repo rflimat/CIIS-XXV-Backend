@@ -52,6 +52,7 @@ const email_registro = `<style type="text/css">
               <p>Nos complace confirmar que su registro en nuestro sistema web CIIS ha sido completado con éxito.
                   Apreciamos su interés y estamos emocionados de tenerlo como parte de nuestra comunidad, a continuación
                   le brindamos detalles de que podrá realizar desde su cuenta:</p>
+              &bull; Pre-inscripción Postmaster<br>
               &bull; Pre-inscripción CIIS<br>
               &bull; Pre-inscripción a talleres<br>
               &bull; Inscripción concursos<br>

@@ -3,6 +3,7 @@ const ScholarCodes = require("../../models/ScholarCodes");
 const Reservation = require("../../models/Reservation");
 const { sendMail } = require("../../utils/send.mail.utils");
 const { emailRegistroCIIS } = require("../../utils/emails/registro");
+const { bodyEmailPostmaster } = require("../../utils/emails/postmaster");
 const http = require("../../utils/http.msg");
 const { getRegistrations } = require("../../services/registration.service");
 const TypeAttendee = require("../../models/TypeAttendee");
@@ -218,15 +219,15 @@ const registersPostmaster = {
             active: false,
             user_id: req.user.id,
             event_id: req.params.event,
-            price_type_attendee_id: 1,
+            price_type_attendee_id: (new Date("2024-09-12T05:00:00Z") > new Date()) ? 1 : 4,
             scholar_code: null,
             created_at: new Date(),
           })
             .then((data) => {
               sendMail(
                 req.user.email,
-                'Pre inscripción a "Congreso Internacional de Informática y Sistemas, 24° Edición" exitosa',
-                emailRegistroCIIS(req.user)
+                'Pre inscripción a "Postmaster XXI Edición" exitosa',
+                bodyEmailPostmaster
               );
               res.status(201).send(data.dataValues);
             })
@@ -259,15 +260,15 @@ const registersPostmaster = {
             active: false,
             user_id: req.user.id,
             event_id: req.params.event,
-            price_type_attendee_id: 2,
+            price_type_attendee_id: (new Date("2024-09-12T05:00:00Z") > new Date()) ? 2 : 5,
             scholar_code: null,
             created_at: new Date(),
           })
             .then((data) => {
               sendMail(
                 req.user.email,
-                'Pre inscripción a "Congreso Internacional de Informática y Sistemas, 24° Edición" exitosa',
-                emailRegistroCIIS(req.user)
+                'Pre inscripción a "Postmaster XXI Edición" exitosa',
+                bodyEmailPostmaster
               );
               res.status(201).send(data.dataValues);
             })
@@ -297,15 +298,15 @@ const registersPostmaster = {
             active: false,
             user_id: req.user.id,
             event_id: req.params.event,
-            price_type_attendee_id: 3,
+            price_type_attendee_id: (new Date("2024-09-12T05:00:00Z") > new Date()) ? 3 : 6,
             scholar_code: null,
             created_at: new Date(),
           })
             .then((data) => {
               sendMail(
                 req.user.email,
-                'Pre inscripción a "Congreso Internacional de Informática y Sistemas, 24° Edición" exitosa',
-                emailRegistroCIIS(req.user)
+                'Pre inscripción a "Postmaster XXI Edición" exitosa',
+                bodyEmailPostmaster
               );
               res.status(201).send(data.dataValues);
             })
@@ -381,9 +382,15 @@ CONTROLLER_INSCRIPTION.GET = async (req, res) => {
 };
 
 CONTROLLER_INSCRIPTION.GET_FILENAME = async (req, res) => {
+  const { type_event } = req.query;
   try {
     const { filename } = req.params;
-    res.sendFile(path.join(GetCiisFolder(), filename));
+    
+    if (type_event === "ciis") {
+      res.sendFile(path.join(GetCiisFolder(), filename));
+    } else if (type_event === "postmaster") {
+      res.sendFile(path.join(GetPostMasterFolder(), filename));
+    }
   } catch (err) {
     console.log(err);
     res.status(500).send(http["500"]);

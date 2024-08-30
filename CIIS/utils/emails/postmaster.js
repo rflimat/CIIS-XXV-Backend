@@ -67,8 +67,7 @@ const bodyEmailPostmaster=`
       <p>Gracias de nuevo por su inscripción y esperamos tenerlo/a con nosotros en el POSTMASTER XXI.</p>
       
       <p>Atentamente,</p>
-      
-      <p>El equipo de tecnología web del CIIS XXV</p>
+      <p>Comité de tecnología web CIIS</p>
     </div>
     <div class="footer">
       <p>No responda a este correo electrónico. Si tiene alguna pregunta, por favor, comuníquese con nosotros a través de los canales indicados en nuestra página web.</p>

@@ -1,8 +1,8 @@
-const confirm = (user) => {
+const confirm = (user, event) => {
   return `<div class="body" style='font-family: "Roboto", "Helvetica", "Arial", sans-serif;'>
 <div class="allText">
     <p>Saludos Estimado/a ${user.name + " " + user.lastname}</p>
-    <p>Nos complace informar que su inscripción en el "Congreso Internacional de Informática y Sistemas, 24° Edición" ha sido confirmada.
+    <p>Nos complace informar que su inscripción en el "${event}" ha sido confirmada.
         Apreciamos su interés y agredecemos el entusiasmo por participar. Lo esperamos en el evento.</p>
     
     <p>Si tuviera alguna pregunta o necesitara asistencia, no dude en contactarnos.
@@ -24,11 +24,11 @@ const confirm = (user) => {
 </div>`;
 };
 
-const abort = (user) => {
+const abort = (user, event) => {
   return `<div class="body" style='font-family: "Roboto", "Helvetica", "Arial", sans-serif;'>
     <div class="allText">
         <p>Saludos Estimado/a ${user.name + " " + user.lastname}</p>
-        <p>Lamentamos informarle que su inscripción en el "Congreso Internacional de Informática y Sistemas, 24° Edición" ha sido rechazada.
+        <p>Lamentamos informarle que su inscripción en el "${event}" ha sido rechazada.
             Es probable que su voucher haya sido observado o no haya podido ser verificado, en cualquier caso escríbamos al correo adjunto.</p>
         
         <p>Si se tratase de un error, no dude en contactarnos.

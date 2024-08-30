@@ -10,6 +10,7 @@ const CONTROLLER_RESERVATION = require("../../controllers/v2/reservation");
 RouterReservation.route("/reservation/:id").patch(isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
+    const { type_event } = req.query;
     const { status } = req.body;
 
     let rs = await Reservation.findOne({ where: { id_reservation: id } });
@@ -20,18 +21,40 @@ RouterReservation.route("/reservation/:id").patch(isAdmin, async (req, res) => {
       { where: { id_reservation: id } }
     );
 
-    if (status == 1)
-      await sendMail(
-        user.email_user,
-        "Confirmación de inscripción CIIS XXIV",
-        confirm({ name: user.name_user, lastname: user.lastname_user })
-      );
-    else if (status == 2)
-      await sendMail(
-        user.email_user,
-        "Observación de inscripción CIIS XXIV",
-        abort({ name: user.name_user, lastname: user.lastname_user })
-      );
+    if (status == 1) {
+      if (type_event === "ciis") {
+        await sendMail(
+          user.email_user,
+          "Confirmación de inscripción CIIS XXV",
+          confirm({ name: user.name_user, lastname: user.lastname_user }, "Congreso Internacional de Informática y Sistemas, 25° Edición")
+        );
+      } else if (type_event == "postmaster") {
+        await sendMail(
+          user.email_user,
+          "Confirmación de inscripción POSTMASTER XXI",
+          confirm({ name: user.name_user, lastname: user.lastname_user }, "POSTMASTER XXI")
+        );
+      } else {
+        return res.status(400).send("Tipo de evento no existente");
+      }
+      
+    } else if (status == 2) {
+      if (type_event === "ciis") {
+        await sendMail(
+          user.email_user,
+          "Observación de inscripción CIIS XXV",
+          abort({ name: user.name_user, lastname: user.lastname_user }, "Congreso Internacional de Informática y Sistemas, 25° Edición")
+        );
+      } else if (type_event == "postmaster") {
+        await sendMail(
+          user.email_user,
+          "Observación de inscripción POSTMASTER XXI",
+          abort({ name: user.name_user, lastname: user.lastname_user }, "POSTMASTER XXI")
+        );
+      } else {
+        return res.status(400).send("Tipo de evento no existente");
+      }
+    }
 
     res.sendStatus(204);
   } catch (err) {
