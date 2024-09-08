@@ -336,6 +336,7 @@ const createNewUser = async (userData) => {
         study_center_user: userData.studycenter,
         password_user: await encrypt(userData.password),
         phone_user: userData.phone,
+        code_user: userData.code,
         plan_ciis: userData.plan_ciis,
         plan_postmaster: userData.plan_postmaster
       });

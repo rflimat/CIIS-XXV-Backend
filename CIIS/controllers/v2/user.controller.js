@@ -5,6 +5,7 @@ const { encrypt } = require("../../utils/password.utils");
 const CONTROLLER_SESSION = require("../../controllers/v2/session");
 const Users = require("../../models/Users");
 const { Op } = require("sequelize");
+const { nanoid } = require('nanoid');
 
 const registerUser = async (req, res) => {
     const { dni, email, password, confPassword } = req.body;
@@ -32,6 +33,7 @@ const registerUser = async (req, res) => {
                 reason: "Las contraseña no coincide con la contraseña de confirmacion"
             });
         }
+        req.body.code = nanoid(15);
         req.body.role = 3
         newUser = await userService.createNewUser(req.body)
         CONTROLLER_SESSION.POST(req, res);
