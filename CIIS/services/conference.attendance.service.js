@@ -303,8 +303,8 @@ const checkAllowedAttendanceToUser = (userId) =>
 
 const checkConferenceAvailabilityByDateTime = (startDateTime, expDateTime) =>
   new Promise((resolve, reject) => {
-    startDateTime = formatDateToUTC5(startDateTime);
-    expDateTime = formatDateToUTC5(expDateTime);
+    //startDateTime = formatDateToUTC5(startDateTime);
+    //expDateTime = formatDateToUTC5(expDateTime);
     console.log(startDateTime, expDateTime);
     const currentDateTime = getDateUTC();
 
@@ -390,7 +390,7 @@ const getConferenceByDayByUser = async (day, userId) => {
         include: [
           {
             model: Speakers,
-            attributes: ["name_speaker", "lastname_speaker"],
+            attributes: ["name_speaker", "lastname_speaker", "dir_img_speaker"],
           },
         ],
         where: literal(`DATE(start_date_conference) = '${day}'`),

@@ -1,13 +1,13 @@
 const { Router } = require("express");
 const RouterReservation = Router();
-const { isAdmin } = require("../../middlewares/v2/auth");
+const { isAdmin, isAtLeastCounter } = require("../../middlewares/v2/auth");
 const Reservation = require("../../models/Reservation");
 const { sendMail } = require("../../utils/send.mail.utils");
 const { confirm, abort } = require("../../utils/emails/confirmReservation");
 const Users = require("../../models/Users");
 const CONTROLLER_RESERVATION = require("../../controllers/v2/reservation");
 
-RouterReservation.route("/reservation/:id").patch(isAdmin, async (req, res) => {
+RouterReservation.route("/reservation/:id").patch(isAtLeastCounter, async (req, res) => {
   try {
     const { id } = req.params;
     const { type_event } = req.query;

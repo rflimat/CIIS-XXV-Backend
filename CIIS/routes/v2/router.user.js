@@ -186,10 +186,10 @@ routerUser.route("/user/code").post(async (req, res) => {
 
 routerUser.route("/user/restore").post(async (req, res) => {
   try {
-    const { email, code, dni } = req.body;
+    const { email, code } = req.body;
 
     let user = await Users.findOne({
-      where: { email_user: email, code_user: code, dni_user: dni },
+      where: { email_user: email, code_user: code },
       attributes: ["id_user", "name_user", "lastname_user", "code_user"],
     });
 

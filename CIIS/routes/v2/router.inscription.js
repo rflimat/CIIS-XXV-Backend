@@ -1,21 +1,21 @@
 const { Router } = require("express");
 const RouterInscription = Router();
 const CONTROLLER_INSCRIPTION = require("../../controllers/v2/inscription");
-const { isAdmin } = require("../../middlewares/v2/auth");
+const { isAtLeastCounter } = require("../../middlewares/v2/auth");
 
 RouterInscription.route("/event/:event/reservation/ciis")
   .post(CONTROLLER_INSCRIPTION.POST);
 
 RouterInscription.route("/events/:event/reservation/ciis")
-  .get(isAdmin, CONTROLLER_INSCRIPTION.GET);
+  .get(isAtLeastCounter, CONTROLLER_INSCRIPTION.GET);
 
 RouterInscription.route("/event/:event/reservation/ciis/:filename").get(
-  isAdmin,
+  isAtLeastCounter,
   CONTROLLER_INSCRIPTION.GET_FILENAME
 );
 
 RouterInscription.route("/event/:event/reservation/postmaster/:filename").get(
-  isAdmin,
+  isAtLeastCounter,
   CONTROLLER_INSCRIPTION.GET_FILENAME
 );
 

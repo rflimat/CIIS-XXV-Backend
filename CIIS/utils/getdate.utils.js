@@ -12,9 +12,10 @@ const getDateTimeLocalPeru=()=>{
 }
 
 const getDateTime = () => {
-  const timeZoneOffset = -5 * 60 * 60 * 1000;
-  const dateMilliseconds = new Date().getTime();
-  const currentTimePeru = new Date(dateMilliseconds + timeZoneOffset);
+  //const timeZoneOffset = -5 * 60 * 60 * 1000;
+  //const dateMilliseconds = new Date().getTime();
+  //const currentTimePeru = new Date(dateMilliseconds + timeZoneOffset);
+  const currentTimePeru = new Date();
   const anio = currentTimePeru.getFullYear();
   const mes = String(currentTimePeru.getMonth() + 1).padStart(2, "0");
   const dia = String(currentTimePeru.getDate()).padStart(2, "0");
@@ -45,7 +46,7 @@ const getDateUTC=()=>{
   const fechaHoraActualUTC = new Date();
   
   // Ajustar la hora actual para UTC-5 (restar 5 horas)
-  fechaHoraActualUTC.setUTCHours(fechaHoraActualUTC.getUTCHours() - 5);
+  //fechaHoraActualUTC.setUTCHours(fechaHoraActualUTC.getUTCHours() - 5);
   
   // Obtener la fecha actual en formato UTC-5
   const fechaUTC5 = fechaHoraActualUTC.toISOString().slice(0, 10); // Formato: YYYY-MM-DD
