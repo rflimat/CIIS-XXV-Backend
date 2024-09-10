@@ -45,10 +45,15 @@ const Reservation = sequelize.define(
       type: DataTypes.DATE,
       allowNull: true,
     },
-    allowedAttendance:{
-      type:DataTypes.BOOLEAN,
-      allowNull:false,
+    allowedAttendance: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
       defaultValue: 0,
+    },
+    kit_delivered: {
+      type: DataTypes.TINYINT,
+      allowNull: true,
+      defaultValue: 0
     }
   },
   {
