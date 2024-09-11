@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const RouterReservation = Router();
-const { isAdmin, isAtLeastCounter } = require("../../middlewares/v2/auth");
+const { isAtLeastCounter, isAtLeastOrganizer } = require("../../middlewares/v2/auth");
 const Reservation = require("../../models/Reservation");
 const { sendMail } = require("../../utils/send.mail.utils");
 const { confirm, abort } = require("../../utils/emails/confirmReservation");
@@ -19,7 +19,7 @@ RouterReservation.route("/reservation/:id").patch(isAtLeastCounter, async (req, 
     let user = await Users.findOne({ where: rs.user_id });
 
     await Reservation.update(
-      { enrollment_status: status },
+      { enrollment_status: status, updated_at: new Date() },
       { where: { id_reservation: id } }
     );
 
@@ -66,11 +66,12 @@ RouterReservation.route("/reservation/:id").patch(isAtLeastCounter, async (req, 
 });
 
 RouterReservation.route("/reservation/qr").post(
-  isAdmin,
+  isAtLeastCounter,
   CONTROLLER_RESERVATION.POST_BY_QR
 );
 
 RouterReservation.route("/event/:idEvent/kitdelivered").patch(
+  isAtLeastOrganizer,
   async (req, res) => {
     try {
       const { user } = req.query

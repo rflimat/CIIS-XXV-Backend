@@ -28,6 +28,7 @@ const getRegistrations = async (query, event_id = false) => {
     });
 
     const registrationsMap = rows.map((registration) => {
+      console.log(registration);
       return {
         id: registration.id_reservation,
         typeattendee: registration.price_type_attendee.type_attendee_id,
@@ -42,6 +43,8 @@ const getRegistrations = async (query, event_id = false) => {
         phone: registration.user.phone_user,
         price: registration.price_type_attendee.price_attendee,
         scholar_code: registration.scholar_code,
+        created_at: registration.created_at,
+        updated_at: registration.updated_at,
       };
     });
 
@@ -138,6 +141,8 @@ const getRegistrations = async (query, event_id = false) => {
       dni: registration.user.dni_user,
       phone: registration.user.phone_user,
       price: registration.price_type_attendee.price_attendee,
+      created_at: registration.created_at,
+      updated_at: registration.updated_at
     };
   });
 

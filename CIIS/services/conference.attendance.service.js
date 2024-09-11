@@ -346,6 +346,7 @@ const createOneConferenceAttendance = async (
     try {
       const conferenceAttendanceObject = {
         conference_id: conferenceId,
+        created_at: new Date(),
         reservation_id: reservationId,
         user_id: userId,
       };
@@ -414,6 +415,35 @@ const getConferenceByDayByUser = async (day, userId) => {
   });
 };
 
+const deleteConferenceAttendance = async (idUser, conferenceId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log(idUser, conferenceId);
+      const conferenceAttendance = await ConferenceAttendance.findOne({
+        where: {
+          user_id: idUser,
+          conference_id: conferenceId,
+        },
+      });
+
+      if (!conferenceAttendance) {
+        reject({
+          code: 404,
+          message: "La asistencia a eliminar no existe",
+        });
+        return;
+      }
+      await conferenceAttendance.destroy();
+      resolve({ message: "Asistencia eliminada correctamente" });
+    } catch (error) {
+      reject({
+        code: 500,
+        message: "Error al eliminar la asistencia",
+      });
+    }
+  });
+};
+
 module.exports = {
   createConferenceAttendance,
   createOneConferenceAttendance,
@@ -429,4 +459,5 @@ module.exports = {
   getTimeOfDayToConferences,
   getConferenceByDayByUser,
   searchRegisterByEventAndUserV2,
+  deleteConferenceAttendance
 };

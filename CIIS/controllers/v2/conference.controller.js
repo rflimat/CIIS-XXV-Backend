@@ -17,6 +17,7 @@ const {
   checkConferenceAvailabilityByDateTime,
   getConferenceByDayByUser,
   checkAllowedAttendanceToUser,
+  deleteConferenceAttendance,
 } = require("../../services/conference.attendance.service");
 const fs = require("fs");
 
@@ -121,6 +122,21 @@ const registerAttendanceConferenceCurrent = async (req, res) => {
 
     if (entry == 0) {
       await updateUser(userId, { allowedAttendance: 0 }, transaction);
+
+      const conferenceFound = await searchOneConferenceByDateTimeAvailability(
+        eventId
+      );
+
+      const {
+        id_conference: conferenceId,
+        start_date_conference: startDateTime,
+        exp_date_conference: expDateTime,
+      } = conferenceFound;
+
+      await checkConferenceAvailabilityByDateTime(startDateTime, expDateTime);
+
+      await deleteConferenceAttendance(userId, conferenceId);
+
       await transaction.commit();
       res.send({ message: "Asistencia Deshabilitada" });
       return;
