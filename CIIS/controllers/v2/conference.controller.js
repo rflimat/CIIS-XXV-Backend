@@ -175,7 +175,6 @@ const registerAttendanceConferenceCurrent = async (req, res) => {
         userId,
         transaction
       );
-
       if (reservationFound) {
         Reservation.update(
           {
