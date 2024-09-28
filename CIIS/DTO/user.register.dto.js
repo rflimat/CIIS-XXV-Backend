@@ -108,12 +108,9 @@ const UserPasswordDto = Type.Object(
         pattern: "La contraseña debe tener de 6 a 16 caracteres alfanuméricos",
       },
     }),
-    email: {
-      ignore: true,
-    },
   },
   {
-    additionalProperties: false,
+    additionalProperties: true,
     errorMessage: {
       additionalProperties: "El formato no es válido",
     },
@@ -197,4 +194,5 @@ module.exports = {
   userEmailDTO,
   userCheckEmailCodeDTO,
   userCreateAccountDTO,
+  userPasswordDTO
 };

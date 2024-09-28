@@ -167,7 +167,7 @@ const registerAttendanceConferenceCurrent = async (req, res) => {
         exp_date_conference: expDateTime,
       } = conferenceFound;
 
-      await checkConferenceAvailabilityByDateTime(startDateTime, expDateTime);
+      //await checkConferenceAvailabilityByDateTime(startDateTime, expDateTime);
 
       await createOneConferenceAttendance(
         conferenceId,
@@ -175,6 +175,19 @@ const registerAttendanceConferenceCurrent = async (req, res) => {
         userId,
         transaction
       );
+
+      if (reservationFound) {
+        Reservation.update(
+          {
+            kit_delivered: 1,
+          },
+          {
+            where: {
+              id_reservation: reservationId
+            }
+          }
+        )
+      }
     }
 
     await updateUser(

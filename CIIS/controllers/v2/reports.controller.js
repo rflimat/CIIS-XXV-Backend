@@ -26,13 +26,11 @@ const getReportsRegistrations = async (req, res) => {
       { header: 'DNI', key: 'dni_user', width: 15 },
       { header: 'Celular', key: 'phone_user', width: 15 },
       { header: 'Correo', key: 'email_user', width: 15 },
-      { header: 'Voucher', key: 'num_voucher', width: 15 },
       { header: 'Precio', key: 'price_attendee', width: 15 },
-      { header: 'Estado de registro', key: 'register_status', width: 15 },
+      { header: 'Estado de registro', key: 'status', width: 15 },
       { header: 'Tipo de asistente', key: 'type_attendee', width: 15 },
       { header: 'Fecha de creación', key: 'created_at', width: 15 },
-      { header: 'Fecha de actualización', key: 'updated_at', width: 15 },
-      { header: 'Usuario encargado', key: 'responsible_user', width: 15 },
+      { header: 'Fecha de actualización', key: 'updated_at', width: 15 }
     ];
     worksheet.columns = columns;
     console.log(registerFound)

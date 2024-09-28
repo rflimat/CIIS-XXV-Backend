@@ -13,23 +13,31 @@ const {
 } = require("../../utils/emails/restorePwd");
 const { uuid } = require("uuidv4");
 const routerUser = Router();
+const jwt = require("jsonwebtoken");
+const { secret_key } = require("../../config/development");
 
 // 2024
-const userUpdateDTO = require('../../DTO/user.update.event.dto')
-const { userRegisterDTO } = require('../../DTO/user.register.dto')
-const { getUsers, updateUser, getOneUser, deleteUser, registerUser, createUser } = require('../../controllers/v2/user.controller');
+const userUpdateDTO = require("../../DTO/user.update.event.dto");
+const {
+  userRegisterDTO,
+  userPasswordDTO,
+} = require("../../DTO/user.register.dto");
+const {
+  getUsers,
+  updateUser,
+  getOneUser,
+  deleteUser,
+  registerUser,
+  createUser,
+} = require("../../controllers/v2/user.controller");
 const { userCreateDTO } = require("../../DTO/user.create.dto");
 
-
-routerUser.route("/users").get(authMid, isAdmin, getUsers)
-routerUser.route("/users/:id").put(authMid, isAdmin, userUpdateDTO, updateUser)
-routerUser.route("/users/:id").get(authMid, isAdmin, getOneUser)
-routerUser.route("/users/:id").delete(authMid, isAdmin, deleteUser)
-routerUser.route("/users").post(authMid, isAdmin, userCreateDTO, createUser)
+routerUser.route("/users").get(authMid, isAdmin, getUsers);
+routerUser.route("/users/:id").put(authMid, isAdmin, userUpdateDTO, updateUser);
+routerUser.route("/users/:id").get(authMid, isAdmin, getOneUser);
+routerUser.route("/users/:id").delete(authMid, isAdmin, deleteUser);
+routerUser.route("/users").post(authMid, isAdmin, userCreateDTO, createUser);
 // 2024
-
-
-
 
 routerUser.route("/user").post(userRegisterDTO, registerUser);
 
@@ -37,27 +45,27 @@ routerUser.route("/user/inscription").get(authMid, async (req, res) => {
   const { type_event, event } = req.query;
   let prestatus = null;
   let inscripciones = {
-    status: null
-  }
+    status: null,
+  };
 
   try {
-    let user = await Users.findOne({where: { id_user: req.user.id}})
+    let user = await Users.findOne({ where: { id_user: req.user.id } });
 
     if (type_event === "ciis") {
       inscripciones.talleres = [];
-  
+
       let talleres = await TallerInscriptionSQL.findAll({
         where: {
           relatedUser: req.user.id,
         },
       });
-  
+
       inscripciones.talleres = await Promise.all(
         talleres.map(async (tll) => {
           let taller = new Taller();
           await taller.load(tll.relatedTaller);
           taller.state = tll.state;
-  
+
           return Promise.resolve(taller);
         })
       );
@@ -139,11 +147,11 @@ routerUser.route("/user/inscription").patch(authMid, async (req, res) => {
 
     if (req.body.plan_ciis) {
       Users.update(
-        { plan_postmaster: req.body.plan_postmaster },
+        { plan_ciis: req.body.plan_ciis },
         { where: { id_user: req.user.id } }
       );
     }
-    
+
     res.status(201).json({ msg: "ok" });
   } catch (err) {
     console.log(err);
@@ -157,7 +165,7 @@ routerUser.route("/user/code").post(async (req, res) => {
 
     let user = await Users.findOne({
       where: { email_user: email },
-      attributes: ["name_user", "lastname_user", "code_user"],
+      attributes: ["id_user", "name_user", "lastname_user", "code_user"],
     });
 
     if (!user?.dataValues)
@@ -167,30 +175,93 @@ routerUser.route("/user/code").post(async (req, res) => {
         code: 404,
       });
 
+    let token = jwt.sign(user.dataValues, process.env.JWT_PRIVATE_KEY, {
+      expiresIn: "10m",
+    });
+
+    await Users.update(
+      { token_user: token },
+      {
+        where: { id_user: user.id_user },
+      }
+    );
+
     sendMail(
       email,
-      "CIIS SOPORTE - Código único de usuario",
+      "CIIS SOPORTE - Restauración de contraseña",
       mail2sendUserCode({
         name: user.name_user,
         lastname: user.lastname_user,
         code: user.code_user,
+        token: token,
       })
     );
 
-    res.send(user);
+    res.send({ msg: "Enlace enviado a correo electrónico" });
   } catch (err) {
     console.log(err);
     res.status(500).send(http["500"]);
   }
 });
 
-routerUser.route("/user/restore").post(async (req, res) => {
+routerUser.route("/user/verify").post(async (req, res) => {
   try {
-    const { email, code } = req.body;
+    const { code, token } = req.body;
+
+    let user = await Users.findOne({
+      where: { code_user: code, token_user: token },
+      attributes: [
+        "name_user",
+        "lastname_user",
+        "code_user",
+        "email_user",
+        "token_user",
+      ],
+    });
+
+    if (!user?.dataValues)
+      return res.status(404).send({
+        error: "Código y/o token de usuario no válido",
+        reason:
+          "Este código y/o token de usuario no es válido. Vuelva a solicitar restauración de contraseña",
+        code: 404,
+      });
+
+    jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+
+    res.send(user);
+  } catch (err) {
+    if (err?.name === "TokenExpiredError") {
+      return res.status(404).send({
+        error: "Token expirado.",
+        reason: "Token de usuario ha expirado. Vuelva a solicitar restauración de contraseña",
+        code: 404,
+      });
+    } else if (err?.name === "JsonWebTokenError") {
+      return res.status(404).send({
+        error: "Token no válido",
+        reason: "Token de usuario no es válido. Vuelva a solicitar restauración de contraseña",
+        code: 404,
+      });
+    }
+    console.log(err);
+    res.status(500).send(http["500"]);
+  }
+});
+
+routerUser.route("/user/restore").post(userPasswordDTO, async (req, res) => {
+  try {
+    const { email, code, password } = req.body;
 
     let user = await Users.findOne({
       where: { email_user: email, code_user: code },
-      attributes: ["id_user", "name_user", "lastname_user", "code_user"],
+      attributes: [
+        "id_user",
+        "name_user",
+        "lastname_user",
+        "code_user",
+        "token_user",
+      ],
     });
 
     if (!user?.dataValues)
@@ -201,12 +272,12 @@ routerUser.route("/user/restore").post(async (req, res) => {
         code: 404,
       });
 
+    jwt.verify(user.token_user, process.env.JWT_PRIVATE_KEY);
+
     let newUserCode = uuid();
-    let pivote = Math.floor(Math.random() * 41);
-    let pass = (await encrypt(newUserCode)).substring(pivote, pivote + 10);
 
     await Users.update(
-      { code_user: newUserCode, password_user: await encrypt(pass) },
+      { code_user: newUserCode, token_user: "", password_user: await encrypt(password) },
       {
         where: { id_user: user.id_user },
       }
@@ -214,17 +285,28 @@ routerUser.route("/user/restore").post(async (req, res) => {
 
     sendMail(
       email,
-      "CIIS SOPORTE - Restauración de contraseña",
+      "CIIS SOPORTE - Restauración de contraseña completado",
       mail2sendUserPass({
         name: user.name_user,
         lastname: user.lastname_user,
-        code: newUserCode,
-        pass,
       })
     );
 
-    res.send({ msg: "todo ok" });
+    res.send({ msg: "Todo ok" });
   } catch (err) {
+    if (err?.name === "TokenExpiredError") {
+      return res.status(404).send({
+        error: "Token expirado.",
+        reason: "Token de usuario ha expirado. Vuelva a solicitar restauración de contraseña",
+        code: 404,
+      });
+    } else if (err?.name === "JsonWebTokenError") {
+      return res.status(404).send({
+        error: "Token no válido",
+        reason: "Token de usuario no es válido. Vuelva a solicitar restauración de contraseña",
+        code: 404,
+      });
+    }
     console.log(err);
     res.status(500).send(http["500"]);
   }
@@ -257,6 +339,5 @@ routerUser.route("/user/career").patch(authMid, async (req, res) => {
     res.status(500).send(http["500"]);
   }
 });
-
 
 module.exports = routerUser;

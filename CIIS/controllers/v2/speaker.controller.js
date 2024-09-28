@@ -76,6 +76,7 @@ CONTROLLER_SPEAKER.GETONE = async (req, res) => {
             achievements: speaker.achievements_speaker,
             release_year: speaker.release_year_speaker,
             experience_years: speaker.experience_years_speaker,
+            order: speaker.order_speaker
         };
         res.send(speakerFormat);
     } catch (error) {

@@ -19,6 +19,7 @@ const {
 const { getEvents, getOneEvent } = require("../../controllers/event.controller");
 const { uploadMultipleOrSingleFile } = require("../../middlewares/upload.file");
 const { getGalleryEvent, deleteGalleryEvent } = require("../../controllers/v2/galleryEvent.controller");
+const { getSpeakersByEvent } = require("../../controllers/speaker.controller");
 const { getSponsorsByEvent, createSponsorsByEvent, getSponsorsByEventJSON } = require("../../controllers/sponsor.controller");
 const sponsorCreateDTO = require("../../DTO/sponsor.create.dto");
 const { ConferencebyEvent, getJsonConference } = require("../../controllers/v2/conference.controller");
@@ -52,6 +53,7 @@ eventRouter.route('/:idEvent/gallery').get(getGalleryEvent)
 eventRouter.route("/gallery/:id").delete(authMid, isAdmin, deleteGalleryEvent)
 
 
+eventRouter.route('/:idEvent/speakers').get(getSpeakersByEvent);
 // sponsors
 
 eventRouter.route('/:idEvent/sponsors').get(getSponsorsByEvent);

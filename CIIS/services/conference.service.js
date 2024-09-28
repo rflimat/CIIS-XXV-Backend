@@ -54,8 +54,10 @@ const getConferenceService = async (id = null) => {
 const getConferenceByEvent = async (idEvent) => {
     return new Promise(async (resolve, reject) => {
         try {
-
-            const conferences = await Conferences.findAll({ where: { event_id: idEvent } })
+            const conferences = await Conferences.findAll({
+                order: [['start_date_conference', 'ASC']],
+                where: { event_id: idEvent } 
+            });
             let dataFormatted = {}
             dataFormatted = conferences.map((conference) => {
                 return {
@@ -80,9 +82,8 @@ const getConferenceByEventOrder = async (idEvent) => {
         try {
 
             const conferences = await Conferences.findAll({
-                where: { event_id: idEvent },
+                where: { event_id: idEvent, is_active: 1 },
                 order: [
-                    ['is_morning', 'DESC'],
                     ['start_date_conference', 'ASC'],
                 ],
                 include: [{

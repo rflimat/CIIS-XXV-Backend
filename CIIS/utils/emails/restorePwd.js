@@ -2,9 +2,9 @@ function mail2sendUserCode(user) {
   return `<div class="body" style='font-family: "Roboto", "Helvetica", "Arial", sans-serif;'>
   <div class="allText">
       <p>Saludos Estimado/a ${user.name + " " + user.lastname}</p>
-      <p>Mediante la presente facilitamos su código único de usuario.</p>
+      <p>Mediante la presente facilitamos el siguiente enlace para ingresar su nueva contraseña.</p>
       
-      <p><b>${user.code}</b></p>  
+      <p><a href="https://ciistacna.com/recuperacion/${user.code}/${user.token}">Ingrese al siguiente enlace</a></p>  
   
       Atentamente,<br>
       Comité de tecnología web CIIS
@@ -22,14 +22,8 @@ function mail2sendUserPass(user) {
   return `<div class="body" style='font-family: "Roboto", "Helvetica", "Arial", sans-serif;'>
   <div class="allText">
       <p>Saludos Estimado/a ${user.name + " " + user.lastname}</p>
-      <p>La restauración de contraseña se realizado por completo. Facilitamos la nueva contraseña, y su nuevo código único de usuario. Puede cambiar la contraseña desde</p>
-      <p>Cuenta > Cambiar contraseña</p>
-      
-      <p>
-        Nueva contraseña: <b>${user.pass}</b><br>
-        Nuevo código de usuario: <b>${user.code}</b>
-      </p>  
-  
+      <p>La restauración de contraseña se realizado por completo.</p>
+      <p>Puede iniciar sesión ingresando su correo electrónico y su nueva contraseña.</p>
       Atentamente,<br>
       Comité de tecnología web CIIS
   </div>

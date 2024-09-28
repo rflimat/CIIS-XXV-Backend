@@ -1,7 +1,7 @@
 const Conferences = require("../models/Conferences");
 const Events = require("../models/Events");
 const Speakers = require("../models/Speakers");
-const { uploadImage } = require("../utils/upload.img");
+const { uploadImage, deleteImage } = require("../utils/upload.img");
 
 const getSpeakersByEvent = async (id) => {
   return new Promise(async (resolve, reject) => {
@@ -17,8 +17,12 @@ const getSpeakersByEvent = async (id) => {
           attributes: [],
           where: {
             event_id: id,
+            is_active: 1
           },
         },
+      ],
+      order: [
+        ['order_speaker', 'ASC']
       ],
       distinct: true,
     });
@@ -31,6 +35,7 @@ const getSpeakersByEvent = async (id) => {
         id: speaker.id_speaker,
         name: speaker.name_speaker,
         lastname: speaker.lastname_speaker,
+        degree: speaker.degree_speaker,
         role: speaker.ocupation_speaker,
         workplace: speaker.work_place_speaker,
         nationality: speaker.nationality_speaker,
@@ -64,7 +69,8 @@ const createSpeaker = (speakerObject, fileImage = {}, transaction) => {
         trajectory_speaker: speakerObject.trajectory,
         achievements_speaker: speakerObject.achievements,
         release_year_speaker: speakerObject.release_year,
-        experience_years_speaker: speakerObject.experience_years
+        experience_years_speaker: speakerObject.experience_years,
+        order_speaker: speakerObject.order
       };
 
       let fileImageSpeaker = {};
@@ -76,6 +82,7 @@ const createSpeaker = (speakerObject, fileImage = {}, transaction) => {
           "jpg",
           "jpeg",
           "png",
+          "webp"
         ]);
         speakerBuild.dir_img_speaker = fileImageSpeaker.filename;
       }
@@ -117,6 +124,7 @@ const updateSpeaker = (id, speakerObject, fileImage, transaction) => {
           "jpg",
           "jpeg",
           "png",
+          "webp"
         ]);
         speakersUpdate.dir_img_speaker = fileImageSpeaker.filename;
         await speakersUpdate.save({ transaction });

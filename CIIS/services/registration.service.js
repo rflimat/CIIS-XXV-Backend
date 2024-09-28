@@ -76,14 +76,18 @@ const getRegistrations = async (query, event_id = false) => {
   if (year && event) {
     whereEvents[Op.and] = [
       Sequelize.where(Sequelize.fn("YEAR", Sequelize.col("start_date")), year),
-      { type_event_id: { [Op.eq]: event } },
+      { id_event: { [Op.eq]: event_id }},
+      { type_event_id: { [Op.eq]: event }},
     ];
   } else if (year) {
     whereEvents[Op.and] = [
       Sequelize.where(Sequelize.fn("YEAR", Sequelize.col("start_date")), year),
     ];
   } else if (event) {
-    whereEvents[Op.and] = [{ type_event_id: { [Op.eq]: event } }];
+    whereEvents[Op.and] = [ 
+      {id_event: { [Op.eq]: event_id}},
+      {type_event_id: { [Op.eq]: event }}
+    ];
   }
 
   if (status) {

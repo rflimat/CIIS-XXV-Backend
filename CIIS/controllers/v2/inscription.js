@@ -12,12 +12,12 @@ const CONTROLLER_INSCRIPTION = {};
 
 
 const registers = {
-  op1: (req, res) => {
+  publicogeneral: (req, res) => {
     if (!req.files || Object.keys(req.files).length === 0) {
-      return res.status(400).send("Hace falta los archivos requeridos");
+      return res.status(400).send({reason: "Hace falta los archivos requeridos"});
     }
     req.files.payment_doc.mv(
-      path.join(GetCiisFolder(), `${req.user.dni}-ciis-payment.png`),
+      path.join(GetCiisFolder(), `${req.user.dni}-ciis-payment.${req.files.payment_doc.name.split(".").pop()}`),
       (err) => {
         if (err) {
           console.log(err);
@@ -25,20 +25,20 @@ const registers = {
         } else {
           Reservation.create({
             num_voucher: null,
-            dir_voucher: `/event/${req.params.event}/reservation/ciis/${req.user.dni}-ciis-payment.png`,
+            dir_voucher: `/event/${req.params.event}/reservation/ciis/${req.user.dni}-ciis-payment.${req.files.payment_doc.name.split(".").pop()}`,
             dir_fileuniversity: null,
             enrollment_status: 0,
             active: false,
             user_id: req.user.id,
             event_id: req.params.event,
-            price_type_attendee_id: 11,
+            price_type_attendee_id: 7,
             scholar_code: null,
             created_at: new Date(),
           })
             .then((data) => {
               sendMail(
                 req.user.email,
-                'Pre inscripción a "Congreso Internacional de Informática y Sistemas, 24° Edición" exitosa',
+                'Pre inscripción a "Congreso Internacional de Informática y Sistemas, XXV Edición" exitosa',
                 emailRegistroCIIS(req.user)
               );
               res.status(201).send(data.dataValues);
@@ -51,50 +51,9 @@ const registers = {
       }
     );
   },
-  op2: (req, res) => {
-    if (!req.files || Object.keys(req.files).length != 2) {
-      return res.status(400).send("Hace falta los archivos requeridos");
-    }
-
-    if (req.files.payment_doc && req.files.scholar_doc) {
-      req.files.payment_doc
-        .mv(path.join(GetCiisFolder(), `${req.user.dni}-ciis-payment.png`))
-        .then(() =>
-          req.files.scholar_doc.mv(
-            path.join(GetCiisFolder(), `${req.user.dni}-ciis-scholar.png`)
-          )
-        )
-        .then(() => {
-          Reservation.create({
-            num_voucher: null,
-            dir_voucher: `/event/${req.params.event}/reservation/ciis/${req.user.dni}-ciis-payment.png`,
-            dir_fileuniversity: `/event/${req.params.event}/reservation/ciis/${req.user.dni}-ciis-scholar.png`,
-            enrollment_status: 0,
-            active: false,
-            user_id: req.user.id,
-            event_id: req.params.event,
-            price_type_attendee_id: 12,
-            scholar_code: null,
-            created_at: new Date(),
-          })
-            .then((data) => {
-              sendMail(
-                req.user.email,
-                'Pre inscripción a "Congreso Internacional de Informática y Sistemas, 24° Edición" exitosa',
-                emailRegistroCIIS(req.user)
-              );
-              res.status(201).send(data.dataValues);
-            })
-            .catch((err) => {
-              console.log(err);
-              res.status(500).send(http["500"]);
-            });
-        });
-    }
-  },
-  op3: (req, res) => {
+  delegaciones: (req, res) => {
     if (!req.body.scholar_code)
-      return res.status(400).send("Hace falta el código de delegación");
+      return res.status(400).send({reason: "Hace falta el código de delegación"});
 
     ScholarCodes.findOne({ where: { code: req.body.scholar_code } })
       .then((match) => {
@@ -108,34 +67,34 @@ const registers = {
       })
       .then(() => {
         if (!req.files || Object.keys(req.files).length === 0) {
-          return res.status(400).send("Hace falta los archivos requeridos");
+          return res.status(400).send({reason: "Hace falta los archivos requeridos"});
         }
 
         if (req.files.payment_doc && req.files.scholar_doc) {
           req.files.payment_doc
-            .mv(path.join(GetCiisFolder(), `${req.user.dni}-ciis-payment.png`))
+            .mv(path.join(GetCiisFolder(), `${req.user.dni}-ciis-payment.${req.files.payment_doc.name.split(".").pop()}`))
             .then(() =>
               req.files.scholar_doc.mv(
-                path.join(GetCiisFolder(), `${req.user.dni}-ciis-scholar.png`)
+                path.join(GetCiisFolder(), `${req.user.dni}-ciis-scholar.${req.files.scholar_doc.name.split(".").pop()}`)
               )
             )
             .then(() => {
               Reservation.create({
                 num_voucher: null,
-                dir_voucher: `/event/${req.params.event}/reservation/ciis/${req.user.dni}-ciis-payment.png`,
-                dir_fileuniversity: `/event/${req.params.event}/reservation/ciis/${req.user.dni}-ciis-scholar.png`,
+                dir_voucher: `/event/${req.params.event}/reservation/ciis/${req.user.dni}-ciis-payment.${req.files.payment_doc.name.split(".").pop()}`,
+                dir_fileuniversity: `/event/${req.params.event}/reservation/ciis/${req.user.dni}-ciis-scholar.${req.files.scholar_doc.name.split(".").pop()}`,
                 enrollment_status: 0,
                 active: false,
                 user_id: req.user.id,
                 event_id: req.params.event,
-                price_type_attendee_id: 13,
+                price_type_attendee_id: 8,
                 scholar_code: req.body.scholar_code,
                 created_at: new Date(),
               })
                 .then((data) => {
                   sendMail(
                     req.user.email,
-                    'Pre inscripción a "Congreso Internacional de Informática y Sistemas, 24° Edición" exitosa',
+                    'Pre inscripción a "Congreso Internacional de Informática y Sistemas, XXV Edición" exitosa',
                     emailRegistroCIIS(req.user)
                   );
                   res.status(201).send(data.dataValues);
@@ -153,36 +112,36 @@ const registers = {
           : res.status(500).send(http["500"]);
       });
   },
-  op4: (req, res) => {
+  estudiantesunjbg: (req, res) => {
     if (!req.files || Object.keys(req.files).length === 0) {
-      return res.status(400).send("Hace falta los archivos requeridos");
+      return res.status(400).send({reason: "Hace falta los archivos requeridos"});
     }
 
     if (req.files.payment_doc && req.files.scholar_doc) {
       req.files.payment_doc
-        .mv(path.join(GetCiisFolder(), `${req.user.dni}-ciis-payment.png`))
+        .mv(path.join(GetCiisFolder(), `${req.user.dni}-ciis-payment.${req.files.payment_doc.name.split(".").pop()}`))
         .then(() =>
           req.files.scholar_doc.mv(
-            path.join(GetCiisFolder(), `${req.user.dni}-ciis-scholar.png`)
+            path.join(GetCiisFolder(), `${req.user.dni}-ciis-scholar.${req.files.scholar_doc.name.split(".").pop()}`)
           )
         )
         .then(() => {
           Reservation.create({
             num_voucher: null,
-            dir_voucher: `/event/${req.params.event}/reservation/ciis/${req.user.dni}-ciis-payment.png`,
-            dir_fileuniversity: `/event/${req.params.event}/reservation/ciis/${req.user.dni}-ciis-scholar.png`,
+            dir_voucher: `/event/${req.params.event}/reservation/ciis/${req.user.dni}-ciis-payment.${req.files.payment_doc.name.split(".").pop()}`,
+            dir_fileuniversity: `/event/${req.params.event}/reservation/ciis/${req.user.dni}-ciis-scholar.${req.files.scholar_doc.name.split(".").pop()}`,
             enrollment_status: 0,
             active: false,
             user_id: req.user.id,
             event_id: req.params.event,
-            price_type_attendee_id: 14,
+            price_type_attendee_id: 9,
             scholar_code: null,
             created_at: new Date(),
           })
             .then((data) => {
               sendMail(
                 req.user.email,
-                'Pre inscripción a "Congreso Internacional de Informática y Sistemas, 24° Edición" exitosa',
+                'Pre inscripción a "Congreso Internacional de Informática y Sistemas, XXV Edición" exitosa',
                 emailRegistroCIIS(req.user)
               );
               res.status(201).send(data.dataValues);
@@ -199,27 +158,27 @@ const registers = {
 const registersPostmaster = {
   estudiantesesis: (req, res) => {
     if (!req.files || Object.keys(req.files).length != 2) {
-      return res.status(400).send("Hace falta los archivos requeridos");
+      return res.status(400).json({reason: "Hace falta los archivos requeridos"});
     }
 
     if (req.files.payment_doc && req.files.scholar_doc) {
       req.files.payment_doc
-        .mv(path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-payment.${req.files.payment_doc.name.split(".")[1]}`))
+        .mv(path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-payment.${req.files.payment_doc.name.split(".").pop()}`))
         .then(() =>
           req.files.scholar_doc.mv(
-            path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-scholar.${req.files.scholar_doc.name.split(".")[1]}`)
+            path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-scholar.${req.files.scholar_doc.name.split(".").pop()}`)
           )
         )
         .then(() => {
           Reservation.create({
             num_voucher: null,
-            dir_voucher: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-payment.${req.files.payment_doc.name.split(".")[1]}`,
-            dir_fileuniversity: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-scholar.${req.files.scholar_doc.name.split(".")[1]}`,
+            dir_voucher: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-payment.${req.files.payment_doc.name.split(".").pop()}`,
+            dir_fileuniversity: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-scholar.${req.files.scholar_doc.name.split(".").pop()}`,
             enrollment_status: 0,
             active: false,
             user_id: req.user.id,
             event_id: req.params.event,
-            price_type_attendee_id: (new Date("2024-09-12T05:00:00Z") > new Date()) ? 1 : 4,
+            price_type_attendee_id: (new Date("2024-09-13T05:00:00Z") > new Date()) ? 1 : 4,
             scholar_code: null,
             created_at: new Date(),
           })
@@ -240,27 +199,27 @@ const registersPostmaster = {
   },
   estudiantevisitante: (req, res) => {
     if (!req.files || Object.keys(req.files).length != 2) {
-      return res.status(400).send("Hace falta los archivos requeridos");
+      return res.status(400).json({reason: "Hace falta los archivos requeridos"});
     }
 
     if (req.files.payment_doc && req.files.scholar_doc) {
       req.files.payment_doc
-        .mv(path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-payment.${req.files.payment_doc.name.split(".")[1]}`))
+        .mv(path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-payment.${req.files.payment_doc.name.split(".").pop()}`))
         .then(() =>
           req.files.scholar_doc.mv(
-            path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-scholar.${req.files.scholar_doc.name.split(".")[1]}`)
+            path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-scholar.${req.files.scholar_doc.name.split(".").pop()}`)
           )
         )
         .then(() => {
           Reservation.create({
             num_voucher: null,
-            dir_voucher: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-payment.${req.files.payment_doc.name.split(".")[1]}`,
-            dir_fileuniversity: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-scholar.${req.files.scholar_doc.name.split(".")[1]}`,
+            dir_voucher: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-payment.${req.files.payment_doc.name.split(".").pop()}`,
+            dir_fileuniversity: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-scholar.${req.files.scholar_doc.name.split(".").pop()}`,
             enrollment_status: 0,
             active: false,
             user_id: req.user.id,
             event_id: req.params.event,
-            price_type_attendee_id: (new Date("2024-09-12T05:00:00Z") > new Date()) ? 2 : 5,
+            price_type_attendee_id: (new Date("2024-09-13T05:00:00Z") > new Date()) ? 2 : 5,
             scholar_code: null,
             created_at: new Date(),
           })
@@ -281,10 +240,10 @@ const registersPostmaster = {
   },
   publicogeneral: (req, res) => {
     if (!req.files || Object.keys(req.files).length === 0) {
-      return res.status(400).send("Hace falta los archivos requeridos");
+      return res.status(400).json({reason: "Hace falta los archivos requeridos"});
     }
     req.files.payment_doc.mv(
-      path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-payment.png`),
+      path.join(GetPostMasterFolder(), `${req.user.dni}-postmaster-payment.${req.files.payment_doc.name.split(".").pop()}`),
       (err) => {
         if (err) {
           console.log(err);
@@ -292,13 +251,13 @@ const registersPostmaster = {
         } else {
           Reservation.create({
             num_voucher: null,
-            dir_voucher: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-payment.${req.files.payment_doc.name.split(".")[1]}`,
+            dir_voucher: `/event/${req.params.event}/reservation/postmaster/${req.user.dni}-postmaster-payment.${req.files.payment_doc.name.split(".").pop()}`,
             dir_fileuniversity: null,
             enrollment_status: 0,
             active: false,
             user_id: req.user.id,
             event_id: req.params.event,
-            price_type_attendee_id: (new Date("2024-09-12T05:00:00Z") > new Date()) ? 3 : 6,
+            price_type_attendee_id: (new Date("2024-09-13T05:00:00Z") > new Date()) ? 3 : 6,
             scholar_code: null,
             created_at: new Date(),
           })
@@ -332,7 +291,7 @@ CONTROLLER_INSCRIPTION.POST = (req, res) => {
       } else if (type_event == "postmaster") {
         opciones = registersPostmaster
       } else {
-        return res.status(400).send("Tipo de evento no existente");
+        return res.status(400).send({reason: "Tipo de evento no existente"});
       }
 
       if (already) {
