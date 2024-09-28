@@ -4,7 +4,7 @@ function mail2sendUserCode(user) {
       <p>Saludos Estimado/a ${user.name + " " + user.lastname}</p>
       <p>Mediante la presente facilitamos el siguiente enlace para ingresar su nueva contraseña.</p>
       
-      <p><a href="https://ciistacna.com/recuperacion/${user.code}/${user.token}">Ingrese al siguiente enlace</a></p>  
+      <p><a href="https://ciistacna.com/resetpassword?code=${user.code}&token=${user.token}">Restaurar contraseña</a></p>  
   
       Atentamente,<br>
       Comité de tecnología web CIIS
