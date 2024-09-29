@@ -31,7 +31,46 @@ const registers = {
             active: false,
             user_id: req.user.id,
             event_id: req.params.event,
-            price_type_attendee_id: 7,
+            price_type_attendee_id: (new Date("2024-11-10T05:00:00Z") > new Date()) ? 7 : 12,
+            scholar_code: null,
+            created_at: new Date(),
+          })
+            .then((data) => {
+              sendMail(
+                req.user.email,
+                'Pre inscripción a "Congreso Internacional de Informática y Sistemas, XXV Edición" exitosa',
+                emailRegistroCIIS(req.user)
+              );
+              res.status(201).send(data.dataValues);
+            })
+            .catch((err) => {
+              console.log(err);
+              res.status(500).send(http["500"]);
+            });
+        }
+      }
+    );
+  },
+  docentesunjbg: (req, res) => {
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(400).send({reason: "Hace falta los archivos requeridos"});
+    }
+    req.files.payment_doc.mv(
+      path.join(GetCiisFolder(), `${req.user.dni}-ciis-payment.${req.files.payment_doc.name.split(".").pop()}`),
+      (err) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).send(err);
+        } else {
+          Reservation.create({
+            num_voucher: null,
+            dir_voucher: `/event/${req.params.event}/reservation/ciis/${req.user.dni}-ciis-payment.${req.files.payment_doc.name.split(".").pop()}`,
+            dir_fileuniversity: null,
+            enrollment_status: 0,
+            active: false,
+            user_id: req.user.id,
+            event_id: req.params.event,
+            price_type_attendee_id: (new Date("2024-11-10T05:00:00Z") > new Date()) ? 8 : 13,
             scholar_code: null,
             created_at: new Date(),
           })
@@ -87,7 +126,7 @@ const registers = {
                 active: false,
                 user_id: req.user.id,
                 event_id: req.params.event,
-                price_type_attendee_id: 8,
+                price_type_attendee_id:  (new Date("2024-11-10T05:00:00Z") > new Date()) ? 9 : 14,
                 scholar_code: req.body.scholar_code,
                 created_at: new Date(),
               })
@@ -134,7 +173,48 @@ const registers = {
             active: false,
             user_id: req.user.id,
             event_id: req.params.event,
-            price_type_attendee_id: 9,
+            price_type_attendee_id: (new Date("2024-11-10T05:00:00Z") > new Date()) ? 10 : 15,
+            scholar_code: null,
+            created_at: new Date(),
+          })
+            .then((data) => {
+              sendMail(
+                req.user.email,
+                'Pre inscripción a "Congreso Internacional de Informática y Sistemas, XXV Edición" exitosa',
+                emailRegistroCIIS(req.user)
+              );
+              res.status(201).send(data.dataValues);
+            })
+            .catch((err) => {
+              console.log(err);
+              res.status(500).send(http["500"]);
+            });
+        });
+    }
+  },
+  estudiantesesis: (req, res) => {
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(400).send({reason: "Hace falta los archivos requeridos"});
+    }
+
+    if (req.files.payment_doc && req.files.scholar_doc) {
+      req.files.payment_doc
+        .mv(path.join(GetCiisFolder(), `${req.user.dni}-ciis-payment.${req.files.payment_doc.name.split(".").pop()}`))
+        .then(() =>
+          req.files.scholar_doc.mv(
+            path.join(GetCiisFolder(), `${req.user.dni}-ciis-scholar.${req.files.scholar_doc.name.split(".").pop()}`)
+          )
+        )
+        .then(() => {
+          Reservation.create({
+            num_voucher: null,
+            dir_voucher: `/event/${req.params.event}/reservation/ciis/${req.user.dni}-ciis-payment.${req.files.payment_doc.name.split(".").pop()}`,
+            dir_fileuniversity: `/event/${req.params.event}/reservation/ciis/${req.user.dni}-ciis-scholar.${req.files.scholar_doc.name.split(".").pop()}`,
+            enrollment_status: 0,
+            active: false,
+            user_id: req.user.id,
+            event_id: req.params.event,
+            price_type_attendee_id: (new Date("2024-11-10T05:00:00Z") > new Date()) ? 11 : 16,
             scholar_code: null,
             created_at: new Date(),
           })
