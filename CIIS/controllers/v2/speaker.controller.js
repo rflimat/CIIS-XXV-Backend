@@ -106,7 +106,8 @@ CONTROLLER_SPEAKER.PUT = async (req, res) => {
             trajectory,
             achievements,
             release_year,
-            experience_years
+            experience_years,
+            order
         } = req.body;
         const { files } = req;
 
@@ -127,6 +128,7 @@ CONTROLLER_SPEAKER.PUT = async (req, res) => {
             if (achievements !== undefined) speakerObject.achievements_speaker = achievements;
             if (release_year !== undefined) speakerObject.release_year_speaker = release_year;
             if (experience_years !== undefined) speakerObject.experience_years_speaker = experience_years;
+            if (order !== undefined) speakerObject.order_speaker = order;
 
             let avatar = {}
             if (files && files.avatar != undefined) {
