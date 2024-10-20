@@ -35,8 +35,8 @@ CONTROLLER_SESSION.POST = (req, res) => {
         });
     })
     .then(async (user) => {
-      let prestatusCiis = user.plan_ciis.length > 0 ? 3 : 4;
-      let prestatusPostmaster = user.plan_postmaster.length > 0 ? 3 : 4;
+      let prestatusCiis = user.plan_ciis && user.plan_ciis.length > 0 ? 3 : 4;
+      let prestatusPostmaster = user.plan_postmaster && user.plan_postmaster.length > 0 ? 3 : 4;
       let inscripciones = {};
       inscripciones.talleres = [];
 

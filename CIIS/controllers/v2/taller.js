@@ -20,7 +20,7 @@ const CONTROLLER_TALLER = {};
 
 CONTROLLER_TALLER.GET = async (_req, res) => {
   try {
-    let talleres = await TallerSQL.findAll({ where: { relatedEvent: 24 } });
+    let talleres = await TallerSQL.findAll(/*{ where: { relatedEvent: 24 } }*/);
     talleres = talleres.map((tll) => new Taller(tll));
     await Promise.all(talleres.map((tll) => tll.loadSpeaker()));
     res.send(talleres);
@@ -212,8 +212,8 @@ CONTROLLER_TALLER.POST_TALLER = async (req, res) => {
       end,
       date,
       place,
+      idEvent,
       idSpeaker } = req.body
-    const { idEvent } = req.params
     const event = await eventService.getOneEvent(idEvent);
     const dataSpeaker = await speakerService.getSpeaker(idSpeaker);
     const speaker = dataSpeaker.dataValues;
@@ -275,6 +275,7 @@ CONTROLLER_TALLER.PUT = async (req, res) => {
       end,
       date,
       place,
+      idEvent,
       idSpeaker,
     } = req.body;
 
@@ -288,12 +289,14 @@ CONTROLLER_TALLER.PUT = async (req, res) => {
     if (date !== undefined) Object.date = date;
     if (place !== undefined) Object.place = place;
     if (idSpeaker !== undefined) {
+      const event = await eventService.getOneEvent(idEvent);
+      Object.relatedEvent = idEvent
+    }
+    if (idSpeaker !== undefined) {
       const dataSpeaker = await speakerService.getSpeaker(idSpeaker);
       const speaker = dataSpeaker.dataValues;
-      Object.idSpeaker = idSpeaker
+      Object.relatedSpeaker = idSpeaker
     }
-
-
 
     await tallerService.updateTaller(id, Object, transaction)
 

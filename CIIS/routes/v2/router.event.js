@@ -67,9 +67,6 @@ eventRouter.route('/:idEvent/speakers/json').get(CONTROLLER_SPEAKER.GET_JSON_BY_
 eventRouter.route('/:idEvent/sponsors/json').get(getSponsorsByEventJSON)
 
 // taller
-eventRouter.route('/:idEvent/taller').post(CONTROLLER_TALLER.POST_TALLER)
 eventRouter.route('/:idEvent/taller').get(CONTROLLER_TALLER.GET_TALLER_EVENT)
-eventRouter.route('/:idEvent/taller/:id').put(CONTROLLER_TALLER.PUT)
-eventRouter.route('/:idEvent/taller/:id').delete(CONTROLLER_TALLER.DELETE)
 eventRouter.route('/:idEvent/taller/json').get(CONTROLLER_TALLER.GET_JSON_BY_EVENT)
 module.exports = eventRouter;

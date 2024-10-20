@@ -88,7 +88,7 @@ const getConferenceByEventOrder = async (idEvent) => {
                 ],
                 include: [{
                     model: Speakers,
-                    attributes: ['id_speaker', 'name_speaker', 'lastname_speaker', 'nationality_speaker']
+                    attributes: ['id_speaker', 'name_speaker', 'lastname_speaker', 'nationality_speaker', 'dir_img_speaker', 'about_profile_speaker']
                 }]
             })
             let dataFormatted = {}
@@ -102,7 +102,9 @@ const getConferenceByEventOrder = async (idEvent) => {
                     isMorning: conference.is_morning,
                     speaker: `${conference.speaker.name_speaker} ${conference.speaker.lastname_speaker}`,
                     idSpeaker: conference.speaker_id,
-                    country: conference.speaker.nationality_speaker
+                    country: conference.speaker.nationality_speaker,
+                    description: conference.speaker.about_profile_speaker,
+                    avatar: conference.speaker.dir_img_speaker
                 }
             })
             resolve(dataFormatted);
