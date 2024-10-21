@@ -409,11 +409,10 @@ const getJsonConference = async (req, res) => {
     const { idEvent } = req.params;
     const event = await eventService.getOneEvent(idEvent);
     data = await getConferenceByEventOrder(idEvent);
-
     const eventosPorFecha = data.reduce((acc, evento) => {
       const date = new Date(evento.start);
       const fecha = date.toLocaleDateString();
-
+      delete evento.fecha
       if (!acc[fecha]) {
         acc[fecha] = {
           day: date.toLocaleDateString("es-ES", { weekday: "long" }),

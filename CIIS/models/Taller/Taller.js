@@ -41,6 +41,11 @@ const TallerSQL = sequelize.define("taller", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  is_morning: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true,
+    defaultValue: true
+  }
 });
 
 // Establece la relación entre Users e Inscriptions
