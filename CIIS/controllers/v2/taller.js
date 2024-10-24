@@ -7,14 +7,13 @@ const { sendMail } = require("../../utils/send.mail.utils");
 const path = require("path");
 const TallerSQL = require("../../models/Taller/Taller");
 
-
 const http = require("../../utils/http.msg");
 const { emailRegistroTaller } = require("../../utils/emails/registro");
 
 const eventService = require("../../services/event.service");
 const speakerService = require("../../services/speaker.service");
 
-const tallerService = require('../../services/taller.service')
+const tallerService = require("../../services/taller.service");
 const fs = require("fs");
 const CONTROLLER_TALLER = {};
 
@@ -133,7 +132,11 @@ const ExcelJS = require("exceljs");
 const Reservation = require("../../models/Reservation");
 const { Sequelize } = require("sequelize");
 const sequelize = require("../../config/database");
-const { handleErrorResponseV2, handleHttpErrorV2 } = require("../../middlewares/handleError");
+const {
+  handleErrorResponseV2,
+  handleHttpErrorV2,
+} = require("../../middlewares/handleError");
+const Speakers = require("../../models/Speakers");
 
 CONTROLLER_TALLER.GET_REPORT = async (req, res) => {
   try {
@@ -201,7 +204,7 @@ function path2save(fileName) {
 }
 
 CONTROLLER_TALLER.POST_TALLER = async (req, res) => {
-  const transaction = await sequelize.transaction()
+  const transaction = await sequelize.transaction();
   try {
     const {
       name,
@@ -212,8 +215,10 @@ CONTROLLER_TALLER.POST_TALLER = async (req, res) => {
       end,
       date,
       place,
+      isMorning,
       idEvent,
-      idSpeaker } = req.body
+      idSpeaker,
+    } = req.body;
     const event = await eventService.getOneEvent(idEvent);
     const dataSpeaker = await speakerService.getSpeaker(idSpeaker);
     const speaker = dataSpeaker.dataValues;
@@ -227,10 +232,11 @@ CONTROLLER_TALLER.POST_TALLER = async (req, res) => {
       end,
       date,
       place,
+      isMorning,
       idSpeaker,
-      idEvent
-    }
-    result = await tallerService.createTallerService(object, transaction)
+      idEvent,
+    };
+    result = await tallerService.createTallerService(object, transaction);
     await transaction.commit();
     res.send({
       message: "Taller creado",
@@ -243,24 +249,22 @@ CONTROLLER_TALLER.POST_TALLER = async (req, res) => {
     }
     handleHttpErrorV2(res, error);
   }
-}
+};
 
 CONTROLLER_TALLER.GET_TALLER_EVENT = async (req, res) => {
   try {
-    const { idEvent } = req.params
+    const { idEvent } = req.params;
     const event = await eventService.getOneEvent(idEvent);
     const talleres = await TallerSQL.findAll({
-      where:
-      {
-        relatedEvent: idEvent
-      }
-    })
-    res.send(talleres)
+      where: {
+        relatedEvent: idEvent,
+      },
+    });
+    res.send(talleres);
   } catch (error) {
     res.status(500).send(http["500"]);
   }
-}
-
+};
 
 CONTROLLER_TALLER.PUT = async (req, res) => {
   const transaction = await sequelize.transaction();
@@ -275,6 +279,7 @@ CONTROLLER_TALLER.PUT = async (req, res) => {
       end,
       date,
       place,
+      isMorning,
       idEvent,
       idSpeaker,
     } = req.body;
@@ -288,17 +293,18 @@ CONTROLLER_TALLER.PUT = async (req, res) => {
     if (end !== undefined) Object.end = end;
     if (date !== undefined) Object.date = date;
     if (place !== undefined) Object.place = place;
-    if (idSpeaker !== undefined) {
+    if (isMorning !== undefined) Object.is_morning = isMorning;
+    if (idEvent !== undefined) {
       const event = await eventService.getOneEvent(idEvent);
-      Object.relatedEvent = idEvent
+      Object.relatedEvent = idEvent;
     }
     if (idSpeaker !== undefined) {
       const dataSpeaker = await speakerService.getSpeaker(idSpeaker);
       const speaker = dataSpeaker.dataValues;
-      Object.relatedSpeaker = idSpeaker
+      Object.relatedSpeaker = idSpeaker;
     }
 
-    await tallerService.updateTaller(id, Object, transaction)
+    await tallerService.updateTaller(id, Object, transaction);
 
     await transaction.commit();
     res.sendStatus(200);
@@ -310,11 +316,11 @@ CONTROLLER_TALLER.PUT = async (req, res) => {
     }
     handleHttpErrorV2(res, error);
   }
-}
+};
 CONTROLLER_TALLER.DELETE = async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await tallerService.deleteTaller(id)
+    const result = await tallerService.deleteTaller(id);
     res.json(result);
   } catch (error) {
     await transaction.rollback();
@@ -324,20 +330,32 @@ CONTROLLER_TALLER.DELETE = async (req, res) => {
     }
     handleHttpErrorV2(res, error);
   }
-}
+};
 CONTROLLER_TALLER.GET_JSON_BY_EVENT = async (req, res) => {
   try {
     const { idEvent } = req.params;
     const talleres = await TallerSQL.findAll({
-      where:
-      {
-        relatedEvent: idEvent
-      }
-    })
+      where: {
+        relatedEvent: idEvent,
+      },
+      include: [
+        {
+          model: Speakers,
+          attributes: [
+            "id_speaker",
+            "name_speaker",
+            "lastname_speaker",
+            "nationality_speaker",
+            "dir_img_speaker",
+            "about_profile_speaker",
+          ],
+        },
+      ],
+    });
 
     const jsonContent = JSON.stringify(talleres); // Convertir objeto a JSON con formato
     const path = "./uploads/public/reports/" + idEvent + "/";
-    const fileName = 'talleres.json';
+    const fileName = "talleres.json";
 
     if (!fs.existsSync(path)) {
       fs.mkdirSync(path, { recursive: true });
@@ -351,8 +369,8 @@ CONTROLLER_TALLER.GET_JSON_BY_EVENT = async (req, res) => {
       }
     });
 
-    res.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
-    res.setHeader('Content-Type', 'application/json');
+    res.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+    res.setHeader("Content-Type", "application/json");
     res.send(jsonContent);
   } catch (error) {
     if (typeof error.code === "number") {
@@ -361,7 +379,6 @@ CONTROLLER_TALLER.GET_JSON_BY_EVENT = async (req, res) => {
     }
     handleHttpErrorV2(res, error);
   }
-}
-
+};
 
 module.exports = CONTROLLER_TALLER;

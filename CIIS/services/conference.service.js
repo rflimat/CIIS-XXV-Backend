@@ -129,7 +129,7 @@ const getConferenceByEventOrder = async (idEvent) => {
                     start: taller.start,
                     end: taller.end,
                     type: "Taller",
-                    isMorning: undefined,
+                    isMorning: taller.is_morning,
                     speaker: `${taller.speaker.name_speaker} ${taller.speaker.lastname_speaker}`,
                     idSpeaker: taller.speaker.id_speaker,
                     country: taller.speaker.nationality_speaker,

@@ -17,6 +17,7 @@ class Taller {
       end = null,
       date = null,
       place = null,
+      is_morning = null,
       relatedSpeaker = null,
     } = data;
 
@@ -29,6 +30,7 @@ class Taller {
       relatedSpeaker,
       start,
       place,
+      is_morning,
       end,
       date,
     });
