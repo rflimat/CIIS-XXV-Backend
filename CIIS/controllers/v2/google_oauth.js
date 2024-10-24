@@ -18,7 +18,7 @@ const CONTROLLER_GOOGLE_OAUTH = {};
 CONTROLLER_GOOGLE_OAUTH.GET = async (req, res, next) => {
   const code = req.query.code;
   try {
-    const redirect_url = "http://localhost:3000/api/v2/users/";
+    const redirect_url = "http://127.0.0.1:4000/api/v2/google/oauth";
     const oAuthClient = new OAuth2Client(
       process.env.CLIENT_ID,
       process.env.CLIENT_SECRET,
@@ -34,3 +34,5 @@ CONTROLLER_GOOGLE_OAUTH.GET = async (req, res, next) => {
     console.log("Error with signing in with Google");
   }
 };
+
+module.exports = CONTROLLER_GOOGLE_OAUTH;
