@@ -19,9 +19,28 @@ const CONTROLLER_TALLER = {};
 
 CONTROLLER_TALLER.GET = async (_req, res) => {
   try {
-    let talleres = await TallerSQL.findAll(/*{ where: { relatedEvent: 24 } }*/);
+    let talleres = await TallerSQL.findAll({
+      where: { relatedEvent: 15 },
+      order: [
+        ['date', 'ASC'],
+      ],
+      include: [
+        {
+          model: Speakers,
+          attributes: [
+            "id_speaker",
+            "degree_speaker",
+            "name_speaker",
+            "lastname_speaker",
+            "nationality_speaker",
+            "dir_img_speaker",
+            "about_profile_speaker",
+          ],
+        },
+      ]
+    });
     talleres = talleres.map((tll) => new Taller(tll));
-    await Promise.all(talleres.map((tll) => tll.loadSpeaker()));
+    //await Promise.all(talleres.map((tll) => tll.loadSpeaker()));
     res.send(talleres);
   } catch (err) {
     console.log(err);
@@ -71,7 +90,7 @@ CONTROLLER_TALLER.PATCH_INSCRIPTION = async (req, res) => {
     if (state == 1)
       sendMail(
         tallerInscription.relatedUser.email_user,
-        `Confirmación de inscripción taller CIIS - ${taller.name}`,
+        `Confirmación de inscripción taller CIIS XXV - ${taller.name}`,
         confirm(
           {
             name: tallerInscription.relatedUser.name_user,
@@ -119,11 +138,14 @@ CONTROLLER_TALLER.POST_PARTICIPANT = async (req, res) => {
 
     await sendMail(
       req.user.email,
-      `Registro a taller ${taller.name} | CIIS`,
+      `Registro a taller ${taller.name} | CIIS XXV`,
       emailRegistroTaller(req.user, taller)
     );
   } catch (err) {
-    console.log(err);
+    if (err?.error == "Inscripciones cerradas") {
+      return res.status(404).send(err);
+    }
+
     res.status(500).send(http["500"]);
   }
 };
@@ -338,6 +360,9 @@ CONTROLLER_TALLER.GET_JSON_BY_EVENT = async (req, res) => {
       where: {
         relatedEvent: idEvent,
       },
+      order: [
+        ['date', 'ASC'],
+      ],
       include: [
         {
           model: Speakers,

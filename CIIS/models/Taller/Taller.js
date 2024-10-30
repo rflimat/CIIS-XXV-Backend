@@ -18,7 +18,7 @@ const TallerSQL = sequelize.define("taller", {
     allowNull: false,
   },
   tickets: {
-    type: DataTypes.BOOLEAN,
+    type: DataTypes.TINYINT,
     allowNull: false,
   },
   avaible: {

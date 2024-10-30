@@ -90,7 +90,7 @@ const getConferenceByEventOrder = async (idEvent) => {
                 ],
                 include: [{
                     model: Speakers,
-                    attributes: ['id_speaker', 'name_speaker', 'lastname_speaker', 'nationality_speaker', 'dir_img_speaker', 'about_profile_speaker']
+                    attributes: ['id_speaker', 'degree_speaker', 'name_speaker', 'lastname_speaker', 'nationality_speaker', 'dir_img_speaker', 'about_profile_speaker']
                 }]
             })
             const talleres = await TallerSQL.findAll({
@@ -102,7 +102,7 @@ const getConferenceByEventOrder = async (idEvent) => {
                 ],
                 include: [{
                     model: Speakers,
-                    attributes: ['id_speaker', 'name_speaker', 'lastname_speaker', 'nationality_speaker', 'dir_img_speaker', 'about_profile_speaker']
+                    attributes: ['id_speaker', 'degree_speaker', 'name_speaker', 'lastname_speaker', 'nationality_speaker', 'dir_img_speaker', 'about_profile_speaker']
                 }]
 
             })
@@ -115,7 +115,7 @@ const getConferenceByEventOrder = async (idEvent) => {
                     end: conference.exp_date_conference,
                     type: "Ponencia",
                     isMorning: conference.is_morning,
-                    speaker: `${conference.speaker.name_speaker} ${conference.speaker.lastname_speaker}`,
+                    speaker: `${conference.speaker.degree_speaker} ${conference.speaker.name_speaker} ${conference.speaker.lastname_speaker}`,
                     idSpeaker: conference.speaker_id,
                     country: conference.speaker.nationality_speaker,
                     description: conference.speaker.about_profile_speaker,
@@ -130,7 +130,7 @@ const getConferenceByEventOrder = async (idEvent) => {
                     end: taller.end,
                     type: "Taller",
                     isMorning: taller.is_morning,
-                    speaker: `${taller.speaker.name_speaker} ${taller.speaker.lastname_speaker}`,
+                    speaker: `${taller.speaker.degree_speaker} ${taller.speaker.name_speaker} ${taller.speaker.lastname_speaker}`,
                     idSpeaker: taller.speaker.id_speaker,
                     country: taller.speaker.nationality_speaker,
                     description: taller.speaker.about_profile_speaker,

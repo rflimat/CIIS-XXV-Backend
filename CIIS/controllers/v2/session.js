@@ -51,7 +51,10 @@ CONTROLLER_SESSION.POST = (req, res) => {
           await taller.load(tll.relatedTaller);
           taller.state = tll.state;
 
-          return Promise.resolve(taller);
+          return Promise.resolve({
+            id: taller.id,
+            state: taller.state
+          });
         })
       );
 
