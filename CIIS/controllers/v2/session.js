@@ -14,7 +14,6 @@ CONTROLLER_SESSION.POST = (req, res) => {
 
   Users.findOne({ where: { email_user: email } })
     .then(async (data) => {
-      console.log("login");
       if (!data)
         return Promise.reject({
           error: "Usuario no registrado",
@@ -91,6 +90,7 @@ CONTROLLER_SESSION.POST = (req, res) => {
         career: user.university_career_user,
         plan_ciis: user.plan_ciis,
         plan_postmaster: user.plan_postmaster,
+        auth_provider: user.auth_provider,
         tiempoExpiracion: now,
         ...inscriptions,
       };

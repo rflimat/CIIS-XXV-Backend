@@ -1,6 +1,8 @@
 const userService = require('../../services/user.service');
 const Users = require("../../models/Users");
-const Inscriptions = require("../../models/Inscriptions");
+const TallerInscriptionSQL = require("../../models/Taller/TallerInscription");
+const Reservation = require("../../models/Reservation");
+const Taller = require("../../classes/Taller");
 const http = require("../../utils/http.msg");
 const dotenv = require("dotenv");
 const { OAuth2Client } = require("google-auth-library");
@@ -33,7 +35,6 @@ CONTROLLER_GOOGLE_OAUTH.GET = async (req, res, next) => {
       
     res.redirect(303, `http://localhost:4321/redirect?access_token=${user.access_token}`);
 
-    //res.send("Login successful!");
   } catch (err) {
     console.log(err);
     res.status(404).send("Error with signing in with Google");
@@ -45,9 +46,7 @@ CONTROLLER_GOOGLE_OAUTH.GET_USER = async (req, res, next) => {
   try {
     const { access_token } = req.query;
 
-    console.log("access_token: ", access_token)
     const userData = await getUserData(access_token);
-    console.log(userData)
 
     let userSession = null;
 
@@ -81,14 +80,50 @@ CONTROLLER_GOOGLE_OAUTH.GET_USER = async (req, res, next) => {
           );
         }
 
-        userSession = await Users.findOne({ where: { email_user: userData.email } });
+        userSession = (await Users.findOne({ where: { email_user: userData.email } }))?.dataValues;
 
         return Promise.resolve(userSession);
       })
-      .then((user) => {
-        Inscriptions.findOne({
-          where: { id_user: userSession.id_user, activity: "ciis" },
+      .then(async (user) => {
+        let prestatusCiis = user.plan_ciis && user.plan_ciis.length > 0 ? 3 : 4;
+        let prestatusPostmaster = user.plan_postmaster && user.plan_postmaster.length > 0 ? 3 : 4;
+        let inscripciones = {};
+        inscripciones.talleres = [];
+
+        let talleres = await TallerInscriptionSQL.findAll({
+          where: {
+            relatedUser: user.id_user,
+          },
         });
+        inscripciones.talleres = await Promise.all(
+          talleres.map(async (tll) => {
+            let taller = new Taller();
+            await taller.load(tll.relatedTaller);
+            taller.state = tll.state;
+
+            return Promise.resolve({
+              id: taller.id,
+              state: taller.state
+            });
+          })
+        );
+
+        let statusPostmaster = (
+          await Reservation.findOne({
+            where: { user_id: user.id_user, event_id: 14 },
+          })
+        )?.dataValues;
+
+        let statusCiis = (
+          await Reservation.findOne({
+            where: { user_id: user.id_user, event_id: 15 },
+          })
+        )?.dataValues;
+
+        inscripciones.dataPostmaster = statusPostmaster ? statusPostmaster.enrollment_status : prestatusPostmaster;
+        inscripciones.dataCiis = statusCiis ? statusCiis.enrollment_status : prestatusCiis;
+
+        return inscripciones;
       })
       .then((inscriptions) => {
         let now = new Date();
@@ -106,8 +141,9 @@ CONTROLLER_GOOGLE_OAUTH.GET_USER = async (req, res, next) => {
           career: userSession.university_career_user,
           plan_ciis: userSession.plan_ciis,
           plan_postmaster: userSession.plan_postmaster,
-          inscriptions,
+          auth_provider: userSession.auth_provider,
           tiempoExpiracion: now,
+          ...inscriptions,
         };
 
         const token = jwt.sign(user, process.env.JWT_PRIVATE_KEY, {

@@ -88,6 +88,26 @@ routerUser.route("/user/inscription").get(authMid, async (req, res) => {
   }
 });
 
+routerUser.route("/user/dni").patch(authMid, async (req, res) => {
+  try {
+    const { dni } = req.body;
+    await Users.update({ dni_user: dni }, { where: { id_user: req.user.id } });
+    res.status(201).json({ msg: "ok" });
+  } catch (err) {
+    console.log(err);
+
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      return res.status(409).json({
+        error: "DNI ya registrado",
+        code: "409",
+        reason: "El DNI proporcionado ya se encuentra registrado"
+    });
+    }
+
+    res.status(500).send(http["500"]);
+  }
+});
+
 routerUser.route("/user/phone").patch(authMid, async (req, res) => {
   try {
     const { phone } = req.body;
