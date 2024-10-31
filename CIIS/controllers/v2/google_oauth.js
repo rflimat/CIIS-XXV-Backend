@@ -8,12 +8,12 @@ const dotenv = require("dotenv");
 const { OAuth2Client } = require("google-auth-library");
 const { nanoid } = require('nanoid');
 const jwt = require("jsonwebtoken");
+const axios = require("axios");
 
 async function getUserData(access_token) {
-  const response = await fetch(
+  const { data } = await axios(
     `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
   );
-  const data = await response.json();
   return data;
 }
 
@@ -23,7 +23,7 @@ CONTROLLER_GOOGLE_OAUTH.GET = async (req, res, next) => {
   const code = req.query.code;
 
   try {
-    const redirect_url = "http://127.0.0.1:4000/api/v2/google/oauth";
+    const redirect_url = "https://ciistacna.com/api/v2/google/oauth";
     const oAuthClient = new OAuth2Client(
       process.env.CLIENT_ID,
       process.env.CLIENT_SECRET,
@@ -33,7 +33,7 @@ CONTROLLER_GOOGLE_OAUTH.GET = async (req, res, next) => {
     await oAuthClient.setCredentials(response.tokens);
     const user = oAuthClient.credentials;
       
-    res.redirect(303, `http://localhost:4321/redirect?access_token=${user.access_token}`);
+    res.redirect(303, `https://ciistacna.com/redirect?access_token=${user.access_token}`);
 
   } catch (err) {
     console.log(err);
@@ -174,11 +174,11 @@ CONTROLLER_GOOGLE_OAUTH.GET_USER = async (req, res, next) => {
 }
 
 CONTROLLER_GOOGLE_OAUTH.POST = (req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:4321");
+  res.header("Access-Control-Allow-Origin", "https://ciistacna.com");
   res.header("Access-Control-Allow-Credentials", 'true');
   res.header("Referrer-Policy","no-referrer-when-downgrade");
 
-  const redirectUrl = "http://127.0.0.1:4000/api/v2/google/oauth";
+  const redirectUrl = "https://ciistacna.com/api/v2/google/oauth";
 
   const oAuth2Client = new OAuth2Client(
     process.env.CLIENT_ID,
