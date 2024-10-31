@@ -16,6 +16,7 @@ const path = require("path");
 const RouterTopic = require("./router.topic")
 const RouterSponsor = require("./router.sponsor");
 const routerReport = require("./router.report");
+const RouterGoogleOauth = require("./router.google.oauth");
 const routerDelegacion = require("./router.delegacion")
 
 v2Router.use(
@@ -27,6 +28,7 @@ v2Router.use(
 v2Router.use("/delegaciones", routerDelegacion);
 v2Router.use("/", routerUser);
 v2Router.use("/", routerSession);
+v2Router.use("/google", RouterGoogleOauth);
 v2Router.use("/", RouterTaller);
 v2Router.use("/", RouterSpeaker);
 v2Router.use("/", RouterTopic);

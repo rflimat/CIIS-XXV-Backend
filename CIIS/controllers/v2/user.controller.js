@@ -34,7 +34,8 @@ const registerUser = async (req, res) => {
             });
         }
         req.body.code = nanoid(15);
-        req.body.role = 3
+        req.body.role = 3;
+        req.body.auth_provider = "password";
         newUser = await userService.createNewUser(req.body)
         CONTROLLER_SESSION.POST(req, res);
     } catch (error) {

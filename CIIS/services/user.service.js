@@ -334,17 +334,20 @@ const createNewUser = async (userData) => {
         role_id: userData.role, // asistente
         university_career_user: userData.career,
         study_center_user: userData.studycenter,
-        password_user: await encrypt(userData.password),
+        password_user: userData.password ? await encrypt(userData.password) : null,
         phone_user: userData.phone,
         code_user: userData.code,
         plan_ciis: userData.plan_ciis,
-        plan_postmaster: userData.plan_postmaster
+        plan_postmaster: userData.plan_postmaster,
+        google_id: userData.google_id,
+        auth_provider: userData.auth_provider
       });
 
       await sendMail(userData.email, "Registro exitoso", email_registro);
 
       resolve({ message: 'Usuario creado correctamente' });
     } catch (error) {
+      console.log(error);
       reject({
         code: 500,
         message: "Error al crear el usuario"
