@@ -48,6 +48,14 @@ const Users = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    google_id: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    auth_provider: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     plan_ciis: {
       type: DataTypes.STRING,
       allowNull: true,
