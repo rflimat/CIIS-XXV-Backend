@@ -17,7 +17,8 @@ class Taller {
       end = null,
       date = null,
       place = null,
-      relatedSpeaker = null,
+      is_morning = null,
+      speaker = null,
     } = data;
 
     Object.assign(this, {
@@ -26,9 +27,10 @@ class Taller {
       price,
       tickets,
       avaible,
-      relatedSpeaker,
+      speaker,
       start,
       place,
+      is_morning,
       end,
       date,
     });
@@ -65,20 +67,20 @@ class Taller {
   }
 
   async loadSpeaker() {
-    this.relatedSpeaker = await Speakers.findByPk(this.relatedSpeaker, {
+    this.speaker = await Speakers.findByPk(this.speaker, {
       attributes: [
         "id_speaker",
         "name_speaker",
         "lastname_speaker",
-        "university_speaker",
+        "nationality_speaker",
         "dir_img_speaker",
+        "about_profile_speaker",
       ],
     });
     return Promise.resolve(this);
   }
 
   async checkParticipant(id) {
-    console.log(this);
     let result = await TallerInscriptionSQL.findOne({
       where: {
         relatedUser: id,
@@ -96,7 +98,7 @@ class Taller {
 
     try {
       await this.load(this.id); // refresca la instancia dentro de la transacción
-      if (!this.avaible > 0) return Promise.reject();
+      if (!this.avaible > 0) return Promise.reject({error: "Inscripciones cerradas", reason: "Inscripciones cerradas"});
 
       await TallerInscriptionSQL.create({
         relatedUser: user.id,

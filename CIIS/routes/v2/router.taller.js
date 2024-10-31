@@ -32,4 +32,20 @@ RouterTaller.route("/taller/:id/report").get(
   CONTROLLER_TALLER.GET_REPORT
 );
 
+RouterTaller.route("/taller").post(
+  authMid,
+  isAdmin,
+  CONTROLLER_TALLER.POST_TALLER
+);
+RouterTaller.route("/taller/:id").put(
+  authMid,
+  isAdmin,
+  CONTROLLER_TALLER.PUT
+);
+RouterTaller.route("/taller/:id").delete(
+  authMid,
+  isAdmin,
+  CONTROLLER_TALLER.DELETE
+);
+
 module.exports = RouterTaller;

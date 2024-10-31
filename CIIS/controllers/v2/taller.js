@@ -10,13 +10,37 @@ const TallerSQL = require("../../models/Taller/Taller");
 const http = require("../../utils/http.msg");
 const { emailRegistroTaller } = require("../../utils/emails/registro");
 
+const eventService = require("../../services/event.service");
+const speakerService = require("../../services/speaker.service");
+
+const tallerService = require("../../services/taller.service");
+const fs = require("fs");
 const CONTROLLER_TALLER = {};
 
 CONTROLLER_TALLER.GET = async (_req, res) => {
   try {
-    let talleres = await TallerSQL.findAll({ where: { relatedEvent: 24 } });
+    let talleres = await TallerSQL.findAll({
+      where: { relatedEvent: 15 },
+      order: [
+        ['date', 'ASC'],
+      ],
+      include: [
+        {
+          model: Speakers,
+          attributes: [
+            "id_speaker",
+            "degree_speaker",
+            "name_speaker",
+            "lastname_speaker",
+            "nationality_speaker",
+            "dir_img_speaker",
+            "about_profile_speaker",
+          ],
+        },
+      ]
+    });
     talleres = talleres.map((tll) => new Taller(tll));
-    await Promise.all(talleres.map((tll) => tll.loadSpeaker()));
+    //await Promise.all(talleres.map((tll) => tll.loadSpeaker()));
     res.send(talleres);
   } catch (err) {
     console.log(err);
@@ -66,7 +90,7 @@ CONTROLLER_TALLER.PATCH_INSCRIPTION = async (req, res) => {
     if (state == 1)
       sendMail(
         tallerInscription.relatedUser.email_user,
-        `Confirmación de inscripción taller CIIS - ${taller.name}`,
+        `Confirmación de inscripción taller CIIS XXV - ${taller.name}`,
         confirm(
           {
             name: tallerInscription.relatedUser.name_user,
@@ -114,11 +138,14 @@ CONTROLLER_TALLER.POST_PARTICIPANT = async (req, res) => {
 
     await sendMail(
       req.user.email,
-      `Registro a taller ${taller.name} | CIIS`,
+      `Registro a taller ${taller.name} | CIIS XXV`,
       emailRegistroTaller(req.user, taller)
     );
   } catch (err) {
-    console.log(err);
+    if (err?.error == "Inscripciones cerradas") {
+      return res.status(404).send(err);
+    }
+
     res.status(500).send(http["500"]);
   }
 };
@@ -127,6 +154,11 @@ const ExcelJS = require("exceljs");
 const Reservation = require("../../models/Reservation");
 const { Sequelize } = require("sequelize");
 const sequelize = require("../../config/database");
+const {
+  handleErrorResponseV2,
+  handleHttpErrorV2,
+} = require("../../middlewares/handleError");
+const Speakers = require("../../models/Speakers");
 
 CONTROLLER_TALLER.GET_REPORT = async (req, res) => {
   try {
@@ -192,5 +224,186 @@ function path2save(fileName) {
     fileName
   );
 }
+
+CONTROLLER_TALLER.POST_TALLER = async (req, res) => {
+  const transaction = await sequelize.transaction();
+  try {
+    const {
+      name,
+      price,
+      tickets,
+      avaible,
+      start,
+      end,
+      date,
+      place,
+      isMorning,
+      idEvent,
+      idSpeaker,
+    } = req.body;
+    const event = await eventService.getOneEvent(idEvent);
+    const dataSpeaker = await speakerService.getSpeaker(idSpeaker);
+    const speaker = dataSpeaker.dataValues;
+
+    const object = {
+      name,
+      price,
+      tickets,
+      avaible,
+      start,
+      end,
+      date,
+      place,
+      isMorning,
+      idSpeaker,
+      idEvent,
+    };
+    result = await tallerService.createTallerService(object, transaction);
+    await transaction.commit();
+    res.send({
+      message: "Taller creado",
+    });
+  } catch (error) {
+    await transaction.rollback();
+    if (typeof error.code == "number") {
+      handleErrorResponseV2(res, error.message, error.code);
+      return;
+    }
+    handleHttpErrorV2(res, error);
+  }
+};
+
+CONTROLLER_TALLER.GET_TALLER_EVENT = async (req, res) => {
+  try {
+    const { idEvent } = req.params;
+    const event = await eventService.getOneEvent(idEvent);
+    const talleres = await TallerSQL.findAll({
+      where: {
+        relatedEvent: idEvent,
+      },
+    });
+    res.send(talleres);
+  } catch (error) {
+    res.status(500).send(http["500"]);
+  }
+};
+
+CONTROLLER_TALLER.PUT = async (req, res) => {
+  const transaction = await sequelize.transaction();
+  try {
+    const { id } = req.params;
+    const {
+      name,
+      price,
+      tickets,
+      avaible,
+      start,
+      end,
+      date,
+      place,
+      isMorning,
+      idEvent,
+      idSpeaker,
+    } = req.body;
+
+    const Object = {};
+    if (name !== undefined) Object.name = name;
+    if (price !== undefined) Object.price = price;
+    if (tickets !== undefined) Object.tickets = tickets;
+    if (avaible !== undefined) Object.avaible = avaible;
+    if (start !== undefined) Object.start = start;
+    if (end !== undefined) Object.end = end;
+    if (date !== undefined) Object.date = date;
+    if (place !== undefined) Object.place = place;
+    if (isMorning !== undefined) Object.is_morning = isMorning;
+    if (idEvent !== undefined) {
+      const event = await eventService.getOneEvent(idEvent);
+      Object.relatedEvent = idEvent;
+    }
+    if (idSpeaker !== undefined) {
+      const dataSpeaker = await speakerService.getSpeaker(idSpeaker);
+      const speaker = dataSpeaker.dataValues;
+      Object.relatedSpeaker = idSpeaker;
+    }
+
+    await tallerService.updateTaller(id, Object, transaction);
+
+    await transaction.commit();
+    res.sendStatus(200);
+  } catch (error) {
+    await transaction.rollback();
+    if (typeof error.code == "number") {
+      handleErrorResponseV2(res, error.message, error.code);
+      return;
+    }
+    handleHttpErrorV2(res, error);
+  }
+};
+CONTROLLER_TALLER.DELETE = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await tallerService.deleteTaller(id);
+    res.json(result);
+  } catch (error) {
+    await transaction.rollback();
+    if (typeof error.code == "number") {
+      handleErrorResponseV2(res, error.message, error.code);
+      return;
+    }
+    handleHttpErrorV2(res, error);
+  }
+};
+CONTROLLER_TALLER.GET_JSON_BY_EVENT = async (req, res) => {
+  try {
+    const { idEvent } = req.params;
+    const talleres = await TallerSQL.findAll({
+      where: {
+        relatedEvent: idEvent,
+      },
+      order: [
+        ['date', 'ASC'],
+      ],
+      include: [
+        {
+          model: Speakers,
+          attributes: [
+            "id_speaker",
+            "name_speaker",
+            "lastname_speaker",
+            "nationality_speaker",
+            "dir_img_speaker",
+            "about_profile_speaker",
+          ],
+        },
+      ],
+    });
+
+    const jsonContent = JSON.stringify(talleres); // Convertir objeto a JSON con formato
+    const path = "./uploads/public/reports/" + idEvent + "/";
+    const fileName = "talleres.json";
+
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path, { recursive: true });
+    }
+
+    fs.writeFile(`${path}/${fileName}`, jsonContent, (err) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(`${fileName} creado!`);
+      }
+    });
+
+    res.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+    res.setHeader("Content-Type", "application/json");
+    res.send(jsonContent);
+  } catch (error) {
+    if (typeof error.code === "number") {
+      handleErrorResponseV2(res, error.message, error.code);
+      return;
+    }
+    handleHttpErrorV2(res, error);
+  }
+};
 
 module.exports = CONTROLLER_TALLER;

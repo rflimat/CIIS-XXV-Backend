@@ -17,6 +17,7 @@ const RouterTopic = require("./router.topic")
 const RouterSponsor = require("./router.sponsor");
 const routerReport = require("./router.report");
 const RouterGoogleOauth = require("./router.google.oauth");
+const routerDelegacion = require("./router.delegacion")
 
 v2Router.use(
   fileUpload({
@@ -24,6 +25,7 @@ v2Router.use(
     tempFileDir: "/tmp/",
   })
 );
+v2Router.use("/delegaciones", routerDelegacion);
 v2Router.use("/", routerUser);
 v2Router.use("/", routerSession);
 v2Router.use("/google", RouterGoogleOauth);

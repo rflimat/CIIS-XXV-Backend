@@ -37,18 +37,20 @@ CONTROLLER_RESERVATION.POST_BY_QR = async (req, res) => {
           allowedAttendance: false,
           dir_voucher: "/event/15/reservation/ciis/logo-ins-by-admin.png",
           dir_fileuniversity: "/event/15/reservation/ciis/logo-ins-by-admin.png",
+          created_at: new Date(),
+          updated_at: new Date(),
         });
 
         await sendMail(
           user.email_user,
           "Inscripción a CIIS XXV",
-          confirm({ name: user.name_user, lastname: user.lastname_user }, "Congreso Internacional de Informática y Sistemas, 25° Edición")
+          confirm({ name: user.name_user, lastname: user.lastname_user }, "Congreso Internacional de Informática y Sistemas, XXV Edición")
         );
 
         res.status(201).send(http["201"]);
       } else if (type_event == "postmaster") {
         let newType;
-        if (new Date("2024-09-12T05:00:00Z") > new Date()) {
+        if (new Date("2024-09-13T05:00:00Z") > new Date()) {
           newType = type;
         } else {
           if (type == 1) newType = 4;
@@ -66,6 +68,8 @@ CONTROLLER_RESERVATION.POST_BY_QR = async (req, res) => {
           allowedAttendance: false,
           dir_voucher: "/event/14/reservation/postmaster/logo-ins-by-admin.png",
           dir_fileuniversity: "/event/14/reservation/postmaster/logo-ins-by-admin.png",
+          created_at: new Date(),
+          updated_at: new Date(),
         });
 
         await sendMail(

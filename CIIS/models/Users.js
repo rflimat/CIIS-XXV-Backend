@@ -48,6 +48,10 @@ const Users = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    token_user: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     google_id: {
       type: DataTypes.STRING,
       allowNull: true,

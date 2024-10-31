@@ -1,5 +1,7 @@
+const Taller = require("../classes/Taller");
 const Conferences = require("../models/Conferences");
 const Speakers = require("../models/Speakers");
+const TallerSQL = require("../models/Taller/Taller");
 const { getOneEvent } = require("./event.service");
 const { getSpeaker } = require("./speaker.service");
 
@@ -54,8 +56,10 @@ const getConferenceService = async (id = null) => {
 const getConferenceByEvent = async (idEvent) => {
     return new Promise(async (resolve, reject) => {
         try {
-
-            const conferences = await Conferences.findAll({ where: { event_id: idEvent } })
+            const conferences = await Conferences.findAll({
+                order: [['start_date_conference', 'ASC']],
+                where: { event_id: idEvent }
+            });
             let dataFormatted = {}
             dataFormatted = conferences.map((conference) => {
                 return {
@@ -80,15 +84,27 @@ const getConferenceByEventOrder = async (idEvent) => {
         try {
 
             const conferences = await Conferences.findAll({
-                where: { event_id: idEvent },
+                where: { event_id: idEvent, is_active: 1 },
                 order: [
-                    ['is_morning', 'DESC'],
                     ['start_date_conference', 'ASC'],
                 ],
                 include: [{
                     model: Speakers,
-                    attributes: ['id_speaker', 'name_speaker', 'lastname_speaker', 'nationality_speaker']
+                    attributes: ['id_speaker', 'degree_speaker', 'name_speaker', 'lastname_speaker', 'nationality_speaker', 'dir_img_speaker', 'about_profile_speaker']
                 }]
+            })
+            const talleres = await TallerSQL.findAll({
+                where: {
+                    relatedEvent: idEvent
+                },
+                order: [
+                    ['start', 'ASC'],
+                ],
+                include: [{
+                    model: Speakers,
+                    attributes: ['id_speaker', 'degree_speaker', 'name_speaker', 'lastname_speaker', 'nationality_speaker', 'dir_img_speaker', 'about_profile_speaker']
+                }]
+
             })
             let dataFormatted = {}
             dataFormatted = conferences.map((conference) => {
@@ -99,11 +115,31 @@ const getConferenceByEventOrder = async (idEvent) => {
                     end: conference.exp_date_conference,
                     type: "Ponencia",
                     isMorning: conference.is_morning,
-                    speaker: `${conference.speaker.name_speaker} ${conference.speaker.lastname_speaker}`,
+                    speaker: `${conference.speaker.degree_speaker} ${conference.speaker.name_speaker} ${conference.speaker.lastname_speaker}`,
                     idSpeaker: conference.speaker_id,
-                    country: conference.speaker.nationality_speaker
+                    country: conference.speaker.nationality_speaker,
+                    description: conference.speaker.about_profile_speaker,
+                    avatar: conference.speaker.dir_img_speaker,
                 }
             })
+            const dataTalleres = talleres.map((taller) => {
+                return {
+                    id: taller.id,
+                    topic: taller.name,
+                    start: taller.start,
+                    end: taller.end,
+                    type: "Taller",
+                    isMorning: taller.is_morning,
+                    speaker: `${taller.speaker.degree_speaker} ${taller.speaker.name_speaker} ${taller.speaker.lastname_speaker}`,
+                    idSpeaker: taller.speaker.id_speaker,
+                    country: taller.speaker.nationality_speaker,
+                    description: taller.speaker.about_profile_speaker,
+                    avatar: taller.speaker.dir_img_speaker,
+                }
+            });
+            dataFormatted.push(...dataTalleres)
+            //dataFormatted.push()
+            //console.log(dataFormatted)
             resolve(dataFormatted);
         } catch (error) {
             reject(error);

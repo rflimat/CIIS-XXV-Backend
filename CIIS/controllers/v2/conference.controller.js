@@ -167,7 +167,7 @@ const registerAttendanceConferenceCurrent = async (req, res) => {
         exp_date_conference: expDateTime,
       } = conferenceFound;
 
-      await checkConferenceAvailabilityByDateTime(startDateTime, expDateTime);
+      //await checkConferenceAvailabilityByDateTime(startDateTime, expDateTime);
 
       await createOneConferenceAttendance(
         conferenceId,
@@ -182,10 +182,10 @@ const registerAttendanceConferenceCurrent = async (req, res) => {
           },
           {
             where: {
-              id_reservation: reservationId
-            }
+              id_reservation: reservationId,
+            },
           }
-        )
+        );
       }
     }
 
@@ -409,11 +409,10 @@ const getJsonConference = async (req, res) => {
     const { idEvent } = req.params;
     const event = await eventService.getOneEvent(idEvent);
     data = await getConferenceByEventOrder(idEvent);
-
     const eventosPorFecha = data.reduce((acc, evento) => {
       const date = new Date(evento.start);
       const fecha = date.toLocaleDateString();
-
+      delete evento.fecha;
       if (!acc[fecha]) {
         acc[fecha] = {
           day: date.toLocaleDateString("es-ES", { weekday: "long" }),
@@ -428,6 +427,30 @@ const getJsonConference = async (req, res) => {
       } else {
         acc[fecha].late.push(evento);
       }
+
+      acc[fecha].early.sort((a, b) => {
+        {
+          if (a.start < b.start) {
+            return -1;
+          }
+          if (a.start > b.start) {
+            return 1;
+          }
+          return 0;
+        }
+      });
+
+      acc[fecha].late.sort((a, b) => {
+        {
+          if (a.start < b.start) {
+            return -1;
+          }
+          if (a.start > b.start) {
+            return 1;
+          }
+          return 0;
+        }
+      });
 
       return acc;
     }, {});

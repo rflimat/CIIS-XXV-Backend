@@ -2,7 +2,9 @@ const Users = require("../../models/Users");
 const http = require("../../utils/http.msg");
 const { compare } = require("../../utils/password.utils");
 const jwt = require("jsonwebtoken");
-const Inscriptions = require("../../models/Inscriptions");
+const TallerInscriptionSQL = require("../../models/Taller/TallerInscription");
+const Reservation = require("../../models/Reservation");
+const Taller = require("../../classes/Taller");
 
 const CONTROLLER_SESSION = {};
 
@@ -32,10 +34,46 @@ CONTROLLER_SESSION.POST = (req, res) => {
           code: 401,
         });
     })
-    .then((user) => {
-      Inscriptions.findOne({
-        where: { id_user: user.id_user, activity: "ciis" },
-      })
+    .then(async (user) => {
+      let prestatusCiis = user.plan_ciis && user.plan_ciis.length > 0 ? 3 : 4;
+      let prestatusPostmaster = user.plan_postmaster && user.plan_postmaster.length > 0 ? 3 : 4;
+      let inscripciones = {};
+      inscripciones.talleres = [];
+
+      let talleres = await TallerInscriptionSQL.findAll({
+        where: {
+          relatedUser: user.id_user,
+        },
+      });
+      inscripciones.talleres = await Promise.all(
+        talleres.map(async (tll) => {
+          let taller = new Taller();
+          await taller.load(tll.relatedTaller);
+          taller.state = tll.state;
+
+          return Promise.resolve({
+            id: taller.id,
+            state: taller.state
+          });
+        })
+      );
+
+      let statusPostmaster = (
+        await Reservation.findOne({
+          where: { user_id: user.id_user, event_id: 14 },
+        })
+      )?.dataValues;
+
+      let statusCiis = (
+        await Reservation.findOne({
+          where: { user_id: user.id_user, event_id: 15 },
+        })
+      )?.dataValues;
+
+      inscripciones.dataPostmaster = statusPostmaster ? statusPostmaster.enrollment_status : prestatusPostmaster;
+      inscripciones.dataCiis = statusCiis ? statusCiis.enrollment_status : prestatusCiis;
+
+      return inscripciones;
     })
     .then((inscriptions) => {
       let now = new Date();
@@ -53,8 +91,8 @@ CONTROLLER_SESSION.POST = (req, res) => {
         career: user.university_career_user,
         plan_ciis: user.plan_ciis,
         plan_postmaster: user.plan_postmaster,
-        inscriptions,
         tiempoExpiracion: now,
+        ...inscriptions,
       };
 
       const token = jwt.sign(user, process.env.JWT_PRIVATE_KEY, {
@@ -82,6 +120,6 @@ CONTROLLER_SESSION.DELETE = (req, res) => {
   //res.status(200).send("session eliminada");
   res.cookie("token", "", { expires: new Date(0) });
   res.redirect("/");
-}
+};
 
 module.exports = CONTROLLER_SESSION;

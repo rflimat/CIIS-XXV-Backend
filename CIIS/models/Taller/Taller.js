@@ -18,7 +18,7 @@ const TallerSQL = sequelize.define("taller", {
     allowNull: false,
   },
   tickets: {
-    type: DataTypes.BOOLEAN,
+    type: DataTypes.TINYINT,
     allowNull: false,
   },
   avaible: {
@@ -26,21 +26,26 @@ const TallerSQL = sequelize.define("taller", {
     allowNull: false,
   },
   start: {
-    type: DataTypes.STRING,
+    type: DataTypes.DATE,
     allowNull: true,
   },
   end: {
-    type: DataTypes.STRING,
+    type: DataTypes.DATE,
     allowNull: true,
   },
   date: {
-    type: DataTypes.DATE,
+    type: DataTypes.DATEONLY,
     allowNull: true,
   },
   place: {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  is_morning: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true,
+    defaultValue: true
+  }
 });
 
 // Establece la relación entre Users e Inscriptions

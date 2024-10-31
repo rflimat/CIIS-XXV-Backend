@@ -52,6 +52,7 @@ const createSponsorsByEvent = async (sponsorObject, logo, transaction) => {
                 "jpg",
                 "jpeg",
                 "png",
+                "webp"
             ]);
             sponsorObject.dir_img_sponsor = fileImagesponsor.filename;
             const sponsorBuild = await Sponsors.create(sponsorObject, { transaction });
@@ -115,6 +116,7 @@ const updateSponsorService = (id, sponsorObject, fileImage, transaction) => {
                     "jpg",
                     "jpeg",
                     "png",
+                    "webp"
                 ]);
                 sponsorUpdate.dir_img_sponsor = fileImagesponsor.filename;
                 await sponsorUpdate.save({ transaction });

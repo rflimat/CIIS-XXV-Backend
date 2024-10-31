@@ -54,7 +54,7 @@ const searchRegisterByEventAndUserV2 = async (event, user) => {
         where: {
           user_id: user,
           event_id: event,
-          active: true,
+          //active: true,
         },
         include: [
           {

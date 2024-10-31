@@ -17,7 +17,7 @@ RouterSpeaker.route("/speakers/:id").get(authMid, isAtLeastContentManager, CONTR
 
 RouterSpeaker.route("/speakers/:id").delete(authMid, isAdmin, CONTROLLER_SPEAKER.DELETE);
 
-RouterSpeaker.post('/speakers', authMid, isAtLeastContentManager, validateFileOptional("avatar", ["jpg", "jpeg", "png"]), createSpeakerDTO, createSpeaker);
+RouterSpeaker.post('/speakers', authMid, isAtLeastContentManager, validateFileOptional("avatar", ["jpg", "jpeg", "png", "webp"]), createSpeakerDTO, createSpeaker);
 
 
 module.exports = RouterSpeaker;

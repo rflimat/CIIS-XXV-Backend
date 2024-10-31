@@ -28,7 +28,7 @@ RouterReservation.route("/reservation/:id").patch(isAtLeastCounter, async (req, 
         await sendMail(
           user.email_user,
           "Confirmación de inscripción CIIS XXV",
-          confirm({ name: user.name_user, lastname: user.lastname_user }, "Congreso Internacional de Informática y Sistemas, 25° Edición")
+          confirm({ name: user.name_user, lastname: user.lastname_user }, "Congreso Internacional de Informática y Sistemas, XXV Edición")
         );
       } else if (type_event == "postmaster") {
         await sendMail(
@@ -45,7 +45,7 @@ RouterReservation.route("/reservation/:id").patch(isAtLeastCounter, async (req, 
         await sendMail(
           user.email_user,
           "Observación de inscripción CIIS XXV",
-          abort({ name: user.name_user, lastname: user.lastname_user }, "Congreso Internacional de Informática y Sistemas, 25° Edición")
+          abort({ name: user.name_user, lastname: user.lastname_user }, "Congreso Internacional de Informática y Sistemas, XXV Edición")
         );
       } else if (type_event == "postmaster") {
         await sendMail(

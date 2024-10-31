@@ -73,7 +73,10 @@ const Speakers = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    
+    order_speaker: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
   },
   {
     timestamps: false,

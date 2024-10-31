@@ -197,7 +197,7 @@ const emailRegistroCIIS = (user) => `<style type="text/css">
 <div class="body">
     <div class="allText">
         <p>Saludos Estimado/a ${user.name + " " + user.lastname}</p>
-        <p>Nos complace confirmar que su pre-inscripción en el "Congreso Internacional de Informática y Sistemas, 24° Edición" ha sido completado con éxito.
+        <p>Nos complace confirmar que su pre-inscripción en el "Congreso Internacional de Informática y Sistemas, XXV Edición" ha sido completado con éxito.
             Apreciamos su interés y agredecemos el entusiasmo por participar, un organizador verificará que todo esté en orden con el pago y dará por confirmada su inscripción. Hasta entonces, su vacante será reservada.</p>
         
         <p>Si tuviera alguna pregunta o necesitara asistencia, no dude en contactarnos.
