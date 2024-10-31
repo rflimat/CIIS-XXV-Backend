@@ -71,7 +71,7 @@ CONTROLLER_GOOGLE_OAUTH.GET_USER = async (req, res, next) => {
         }
 
         if (data && !Boolean(data.google_id)) {
-          Users.update(
+          await Users.update(
             { 
               google_id: userData.sub,
               auth_provider: "both"
