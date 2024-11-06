@@ -60,6 +60,8 @@ CONTROLLER_GOOGLE_OAUTH.GET_USER = async (req, res, next) => {
             name: userData.given_name,
             lastname: userData.family_name,
             google_id: userData.sub,
+            plan_ciis: "",
+            plan_postmaster: "",
             auth_provider: "google",
             code: nanoid(15),
             role: 3
