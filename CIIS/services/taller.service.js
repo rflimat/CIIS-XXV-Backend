@@ -10,6 +10,8 @@ const createTallerService = (TallerObject, transaction) => {
                 avaible: TallerObject.avaible,
                 start: TallerObject.start,
                 end: TallerObject.end,
+                start_2: TallerObject.start_2,
+                end_2: TallerObject.end_2,
                 date: TallerObject.date,
                 place: TallerObject.place,
                 is_morning: TallerObject.isMorning,

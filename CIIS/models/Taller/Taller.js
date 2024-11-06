@@ -33,6 +33,14 @@ const TallerSQL = sequelize.define("taller", {
     type: DataTypes.DATE,
     allowNull: true,
   },
+  start_2: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+  end_2: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
   date: {
     type: DataTypes.DATEONLY,
     allowNull: true,
@@ -41,7 +49,16 @@ const TallerSQL = sequelize.define("taller", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  requirements: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   is_morning: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true,
+    defaultValue: true
+  },
+  active: {
     type: DataTypes.BOOLEAN,
     allowNull: true,
     defaultValue: true

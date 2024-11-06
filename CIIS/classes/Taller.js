@@ -15,10 +15,14 @@ class Taller {
       avaible = null,
       start = null,
       end = null,
+      start_2 = null,
+      end_2 = null,
       date = null,
       place = null,
+      requirements = null,
       is_morning = null,
       speaker = null,
+      active = null
     } = data;
 
     Object.assign(this, {
@@ -29,10 +33,14 @@ class Taller {
       avaible,
       speaker,
       start,
+      start_2,
       place,
+      requirements,
       is_morning,
       end,
+      end_2,
       date,
+      active
     });
   }
 
@@ -43,7 +51,7 @@ class Taller {
 
   async loadInscriptions() {
     let inscriptions = await TallerInscriptionSQL.findAll({
-      where: { relatedTaller: this.id },
+      where: { relatedTaller: this.id, active: 1 },
     });
 
     this.inscriptions = inscriptions ?? [];

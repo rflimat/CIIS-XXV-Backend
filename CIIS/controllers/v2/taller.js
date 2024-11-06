@@ -20,7 +20,7 @@ const CONTROLLER_TALLER = {};
 CONTROLLER_TALLER.GET = async (_req, res) => {
   try {
     let talleres = await TallerSQL.findAll({
-      where: { relatedEvent: 15 },
+      where: { relatedEvent: 15, active: 1 },
       order: [
         ['date', 'ASC'],
       ],
@@ -74,7 +74,7 @@ CONTROLLER_TALLER.PATCH_INSCRIPTION = async (req, res) => {
 
     let tallerInscription = (
       await TallerInscriptionSQL.findOne({
-        where: { id: idInscription },
+        where: { id: idInscription, active: 1 },
       })
     )?.dataValues;
 
@@ -235,6 +235,8 @@ CONTROLLER_TALLER.POST_TALLER = async (req, res) => {
       avaible,
       start,
       end,
+      start_2,
+      end_2,
       date,
       place,
       isMorning,
@@ -252,6 +254,8 @@ CONTROLLER_TALLER.POST_TALLER = async (req, res) => {
       avaible,
       start,
       end,
+      start_2,
+      end_2,
       date,
       place,
       isMorning,
@@ -280,6 +284,7 @@ CONTROLLER_TALLER.GET_TALLER_EVENT = async (req, res) => {
     const talleres = await TallerSQL.findAll({
       where: {
         relatedEvent: idEvent,
+        active: 1
       },
     });
     res.send(talleres);
@@ -299,6 +304,8 @@ CONTROLLER_TALLER.PUT = async (req, res) => {
       avaible,
       start,
       end,
+      start_2,
+      end_2,
       date,
       place,
       isMorning,
@@ -313,6 +320,8 @@ CONTROLLER_TALLER.PUT = async (req, res) => {
     if (avaible !== undefined) Object.avaible = avaible;
     if (start !== undefined) Object.start = start;
     if (end !== undefined) Object.end = end;
+    if (start_2 !== undefined) Object.start_2 = start_2;
+    if (end_2 !== undefined) Object.end_2 = end_2;
     if (date !== undefined) Object.date = date;
     if (place !== undefined) Object.place = place;
     if (isMorning !== undefined) Object.is_morning = isMorning;
@@ -359,6 +368,7 @@ CONTROLLER_TALLER.GET_JSON_BY_EVENT = async (req, res) => {
     const talleres = await TallerSQL.findAll({
       where: {
         relatedEvent: idEvent,
+        active: 1
       },
       order: [
         ['date', 'ASC'],
