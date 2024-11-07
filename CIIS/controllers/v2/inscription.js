@@ -70,7 +70,7 @@ const registers = {
             active: false,
             user_id: req.user.id,
             event_id: req.params.event,
-            price_type_attendee_id: (new Date("2024-11-10T05:00:00Z") > new Date()) ? 8 : 13,
+            price_type_attendee_id: (new Date("2024-11-10T05:00:00Z") > new Date()) ? 9 : 14,
             scholar_code: null,
             created_at: new Date(),
           })
@@ -126,7 +126,7 @@ const registers = {
                 active: false,
                 user_id: req.user.id,
                 event_id: req.params.event,
-                price_type_attendee_id:  (new Date("2024-11-10T05:00:00Z") > new Date()) ? 9 : 14,
+                price_type_attendee_id:  (new Date("2024-11-10T05:00:00Z") > new Date()) ? 8 : 13,
                 scholar_code: req.body.scholar_code,
                 created_at: new Date(),
               })

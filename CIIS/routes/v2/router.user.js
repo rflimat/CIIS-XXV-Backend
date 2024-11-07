@@ -32,6 +32,12 @@ const {
 } = require("../../controllers/v2/user.controller");
 const { userCreateDTO } = require("../../DTO/user.create.dto");
 
+function maskEmail(email) {
+  const [name, domain] = email.split("@");
+  const masked = name[0] + "*".repeat(name.length - 2) + name[name.length - 1] + "@" + domain;
+  return masked;
+}
+
 routerUser.route("/users").get(authMid, isAdmin, getUsers);
 routerUser.route("/users/:id").put(authMid, isAdmin, userUpdateDTO, updateUser);
 routerUser.route("/users/:id").get(authMid, isAdmin, getOneUser);
@@ -91,19 +97,32 @@ routerUser.route("/user/inscription").get(authMid, async (req, res) => {
 routerUser.route("/user/dni").patch(authMid, async (req, res) => {
   try {
     const { dni } = req.body;
+      
+    data = (await Users.findOne({ where: { dni_user: dni } }));
+    if (Boolean(data?.dataValues)) {
+      return res.status(409).send({
+        error: "Usuario existente",
+        code: "409",
+        reason: `El DNI proporcionado ya se encuentra registrado con el correo electrónico ${maskEmail(data?.dataValues?.email_user)}`
+      });
+    }
+      
     await Users.update({ dni_user: dni }, { where: { id_user: req.user.id } });
-    res.status(201).json({ msg: "ok" });
+    return res.status(201).json({ msg: "ok" });
   } catch (err) {
     console.log(err);
+    return res.status(500).send(http["500"]);
+  }
+});
 
-    if (err.name === 'SequelizeUniqueConstraintError') {
-      return res.status(409).json({
-        error: "DNI ya registrado",
-        code: "409",
-        reason: "El DNI proporcionado ya se encuentra registrado"
-    });
-    }
-
+routerUser.route("/user/nationality").patch(authMid, async (req, res) => {
+  try {
+    const { nationality } = req.body;
+    console.log(nationality)
+    //Users.update({ nationality_user: nationality }, { where: { id_user: req.user.id } });
+    res.status(201).json({ msg: "ok", if: req.user.id });
+  } catch (err) {
+    console.log(err);
     res.status(500).send(http["500"]);
   }
 });

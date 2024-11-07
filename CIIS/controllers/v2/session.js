@@ -14,6 +14,8 @@ CONTROLLER_SESSION.POST = (req, res) => {
 
   Users.findOne({ where: { email_user: email } })
     .then(async (data) => {
+      console.log(data.dataValues);
+
       if (!data)
         return Promise.reject({
           error: "Usuario no registrado",
@@ -78,8 +80,9 @@ CONTROLLER_SESSION.POST = (req, res) => {
       let now = new Date();
       now.setHours(now.getHours() + 2);
 
-      user = {
+      let userSession = {
         id: user.id_user,
+        nationality: user.nationality_user,
         dni: user.dni_user,
         role: user.role_id,
         email: user.email_user,
@@ -95,7 +98,7 @@ CONTROLLER_SESSION.POST = (req, res) => {
         ...inscriptions,
       };
 
-      const token = jwt.sign(user, process.env.JWT_PRIVATE_KEY, {
+      const token = jwt.sign(userSession, process.env.JWT_PRIVATE_KEY, {
         expiresIn: "2h",
       });
 
@@ -107,9 +110,10 @@ CONTROLLER_SESSION.POST = (req, res) => {
         secure: true,
       });
 
-      res.status(201).send(user);
+      res.status(201).send(userSession);
     })
     .catch((fail) => {
+      console.log(fail);
       return fail.code
         ? res.status(fail.code).send(fail)
         : res.status(500).send(http["500"]);

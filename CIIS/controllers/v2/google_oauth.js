@@ -133,6 +133,7 @@ CONTROLLER_GOOGLE_OAUTH.GET_USER = async (req, res, next) => {
 
         let user = {
           id: userSession.id_user,
+          nationality: userSession.nationality_user,
           dni: userSession.dni_user,
           role: userSession.role_id,
           email: userSession.email_user,

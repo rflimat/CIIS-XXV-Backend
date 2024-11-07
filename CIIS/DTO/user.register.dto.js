@@ -43,9 +43,13 @@ const UserRegisterDtoSchema = Type.Object(
       },
     }),
     dni: Type.String({
-      minLength: 8,
+      minLength: 7,
       maxLength: 20,
       errorMessage: "Debe ser un dni válido",
+    }),
+    nationality: Type.String({
+      minLength: 1,
+      errorMessage: "Debe ser un nacionalidad válida",
     }),
   },
   {

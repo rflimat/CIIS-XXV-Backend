@@ -334,6 +334,7 @@ const createNewUser = async (userData) => {
         role_id: userData.role, // asistente
         university_career_user: userData.career,
         study_center_user: userData.studycenter,
+        nationality_user: userData.nationality,
         password_user: userData.password ? await encrypt(userData.password) : null,
         phone_user: userData.phone,
         code_user: userData.code,

@@ -40,6 +40,10 @@ const Users = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    nationality_user: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     password_user: {
       type: DataTypes.STRING,
       allowNull: true,
