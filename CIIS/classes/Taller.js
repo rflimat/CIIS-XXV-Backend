@@ -51,7 +51,7 @@ class Taller {
 
   async loadInscriptions() {
     let inscriptions = await TallerInscriptionSQL.findAll({
-      where: { relatedTaller: this.id, active: 1 },
+      where: { relatedTaller: this.id },
     });
 
     this.inscriptions = inscriptions ?? [];
@@ -111,7 +111,7 @@ class Taller {
       await TallerInscriptionSQL.create({
         relatedUser: user.id,
         relatedTaller: this.id,
-        voucher: `/private/inscription/taller/${user.dni}-taller-${this.id}.jpg`,
+        voucher: `/${user.dni}-taller-${this.id}.jpg`,
         state: 0,
       });
 

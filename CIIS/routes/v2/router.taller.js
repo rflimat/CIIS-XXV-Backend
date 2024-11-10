@@ -1,7 +1,7 @@
 const {
   authMid,
   isAdmin,
-  isAtLeastOrganizer,
+  isAtLeastTallerManager,
 } = require("../../middlewares/v2/auth");
 const CONTROLLER_TALLER = require("../../controllers/v2/taller");
 
@@ -11,13 +11,19 @@ RouterTaller.route("/taller").get(CONTROLLER_TALLER.GET);
 
 RouterTaller.route("/taller/:id").get(
   authMid,
-  isAtLeastOrganizer,
+  isAtLeastTallerManager,
   CONTROLLER_TALLER.GET_ONE
+);
+
+RouterTaller.route("/taller/:id/inscription/:filename").get(
+  authMid,
+  isAtLeastTallerManager,
+  CONTROLLER_TALLER.GET_FILENAME
 );
 
 RouterTaller.route("/taller/:id/inscription/:idInscription").patch(
   authMid,
-  isAdmin,
+  isAtLeastTallerManager,
   CONTROLLER_TALLER.PATCH_INSCRIPTION
 );
 
@@ -28,7 +34,7 @@ RouterTaller.route("/taller/:id/participant").post(
 
 RouterTaller.route("/taller/:id/report").get(
   authMid,
-  isAtLeastOrganizer,
+  isAtLeastTallerManager,
   CONTROLLER_TALLER.GET_REPORT
 );
 
@@ -39,7 +45,7 @@ RouterTaller.route("/taller").post(
 );
 RouterTaller.route("/taller/:id").put(
   authMid,
-  isAdmin,
+  isAtLeastTallerManager,
   CONTROLLER_TALLER.PUT
 );
 RouterTaller.route("/taller/:id").delete(

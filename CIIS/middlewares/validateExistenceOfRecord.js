@@ -4,7 +4,7 @@ const {
   searchTypeAttendeByEvent
 } = require("../services/priceTypeAttendee.service");
 const { validateExtensionsToFile } = require("../utils/upload.img");
-const { handleErrorResponse, handleHttpError } = require("./handleError");
+const { handleErrorResponse, handleHttpError, handleErrorResponseV2, handleHttpErrorV2 } = require("./handleError");
 const { getUserByDniOrCode,getUserByEmail } = require("../services/user.service");
 const {uploadFile} = require("./upload.file");
 // Valida que el evento exista y que el tipo de asistente este relacionado con este
@@ -141,9 +141,9 @@ const validateExistUser = async (req, res, next) => {
     next();
   } catch (error) {
     if (error.code) {
-      return handleErrorResponse(res, error.message, error.code);
+      return handleErrorResponseV2(res, error.message, error.code);
     }
-    return handleHttpError(res, error);
+    return handleHttpErrorV2(res, error);
   }
 };
 
@@ -167,7 +167,7 @@ const validateExistEvent = async (req, res, next) => {
     let regex = /^[0-9]+$/;
 
     if (!regex.test(idEvent)) {
-      handleErrorResponse(res, "El id del evento no es válido", 400);
+      handleErrorResponseV2(res, "El id del evento no es válido", 400);
       return;
     }
 
@@ -177,7 +177,7 @@ const validateExistEvent = async (req, res, next) => {
     return;
   } catch (error) {
     if (error.code) {
-      handleErrorResponse(res, error.message, error.code);
+      handleErrorResponseV2(res, error.message, error.code);
       return;
     }
 

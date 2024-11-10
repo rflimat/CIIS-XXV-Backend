@@ -69,7 +69,10 @@ const searchRegisterByEventAndUserV2 = async (event, user) => {
       });
 
       if (!registerFound) {
-        resolve(null);
+        reject({
+          code: 400,
+          message: "No hay una inscripción registrada de este usuario",
+        });
         return;
       }
 
@@ -275,7 +278,7 @@ const verifyRegisterStatusAndDateExp = async (reservation, currentDateTime) => {
 
 const checkEventRegistrationAvailability = (enrollmentStatus = 1) =>
   new Promise((resolve, reject) => {
-    if (enrollmentStatus != 2) {
+    if (enrollmentStatus !== 1) {
       reject({ code: 400, message: "Su registro al evento no fue confirmado" });
       return;
     }
@@ -387,6 +390,9 @@ const getConferenceByDayByUser = async (day, userId) => {
           "topic_conference",
           "start_date_conference",
           "exp_date_conference",
+        ],
+        order: [
+          ['start_date_conference', 'ASC'],
         ],
         include: [
           {

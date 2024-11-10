@@ -62,6 +62,17 @@ CONTROLLER_TALLER.GET_ONE = async (req, res) => {
   }
 };
 
+CONTROLLER_TALLER.GET_FILENAME = async (req, res) => {
+  try {
+    const { filename } = req.params;
+    res.sendFile(path2save(filename));
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(http["500"]);
+  }
+};
+
+
 CONTROLLER_TALLER.PATCH_INSCRIPTION = async (req, res) => {
   try {
     const { id, idInscription } = req.params;
@@ -74,7 +85,7 @@ CONTROLLER_TALLER.PATCH_INSCRIPTION = async (req, res) => {
 
     let tallerInscription = (
       await TallerInscriptionSQL.findOne({
-        where: { id: idInscription, active: 1 },
+        where: { id: idInscription },
       })
     )?.dataValues;
 
@@ -122,6 +133,14 @@ CONTROLLER_TALLER.PATCH_INSCRIPTION = async (req, res) => {
 CONTROLLER_TALLER.POST_PARTICIPANT = async (req, res) => {
   try {
     if (!req.files?.payment_doc) return res.status(400).send(http["400"]);
+
+    if (!Boolean(req.user.dni)) {
+      return res.status(404).send({
+        error: "DNI no proporcionado",
+        code: "404",
+        reason: "Debe proporcionar su numero de DNI en la opción Cuenta para continuar con el proceso de inscripción"
+      });
+    }
 
     let taller = new Taller();
     await taller.load(req.params.id);

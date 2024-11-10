@@ -70,9 +70,9 @@ const registerAttendanceByUser = async (req, res) => {
     if (reservationFound) {
       const { id_reservation, enrollment_status } = reservationFound;
 
-      reservationId = id_reservation;
+      await checkEventRegistrationAvailability(enrollment_status);
 
-      // await checkEventRegistrationAvailability(enrollment_status);
+      reservationId = id_reservation;
     }
 
     await checkAllowedAttendanceToUser(userId);
@@ -114,10 +114,25 @@ const registerAttendanceConferenceCurrent = async (req, res) => {
     if (!regex.test(entry)) {
       handleErrorResponseV2(
         res,
-        "El parametro entrada solo puede ser 0 y 1",
+        "El parametro entrada solo puede ser entre [0-2]",
         400
       );
       return;
+    }
+
+    let reservationId = null;
+
+    const reservationFound = await searchRegisterByEventAndUserV2(
+      eventId,
+      userId
+    );
+
+    if (reservationFound) {
+      const { id_reservation, enrollment_status } = reservationFound;
+      
+      await checkEventRegistrationAvailability(enrollment_status);
+
+      reservationId = id_reservation;
     }
 
     if (entry == 0) {
@@ -142,21 +157,8 @@ const registerAttendanceConferenceCurrent = async (req, res) => {
       return;
     }
 
-    let reservationId = null;
     if (entry == 1) {
       //habilitar y marcar asistencia
-      const reservationFound = await searchRegisterByEventAndUserV2(
-        eventId,
-        userId
-      );
-
-      if (reservationFound) {
-        const { id_reservation, enrollment_status } = reservationFound;
-        // await checkEventRegistrationAvailability(enrollment_status);
-
-        reservationId = id_reservation;
-      }
-
       const conferenceFound = await searchOneConferenceByDateTimeAvailability(
         eventId
       );

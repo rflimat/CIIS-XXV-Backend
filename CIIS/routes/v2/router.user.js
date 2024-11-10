@@ -31,6 +31,7 @@ const {
   createUser,
 } = require("../../controllers/v2/user.controller");
 const { userCreateDTO } = require("../../DTO/user.create.dto");
+const ConferenceAttendance = require("../../models/ConferenceAttendance");
 
 function maskEmail(email) {
   const [name, domain] = email.split("@");
@@ -52,6 +53,7 @@ routerUser.route("/user/inscription").get(authMid, async (req, res) => {
   let prestatus = null;
   let inscripciones = {
     status: null,
+    attendances: 0
   };
 
   try {
@@ -76,6 +78,24 @@ routerUser.route("/user/inscription").get(authMid, async (req, res) => {
         })
       );
 
+      let attendances = await ConferenceAttendance.count({
+        include: [
+          {
+            model: Users,
+            where: {
+              user_id: req.user.id
+            }
+          },
+          {
+            model: Reservation,
+            where: {
+              event_id: event
+            }
+          }
+        ]
+      });
+      
+      inscripciones.attendances = attendances;
       prestatus = user.plan_ciis.length > 0 ? 3 : 4;
     } else {
       prestatus = user.plan_postmaster.length > 0 ? 3 : 4;
@@ -86,6 +106,7 @@ routerUser.route("/user/inscription").get(authMid, async (req, res) => {
         where: { user_id: req.user.id, event_id: event },
       })
     )?.dataValues;
+
     inscripciones.status = status ? status.enrollment_status : prestatus;
     res.send(inscripciones);
   } catch (err) {

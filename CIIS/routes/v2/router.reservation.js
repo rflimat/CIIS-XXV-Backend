@@ -6,7 +6,7 @@ const { sendMail } = require("../../utils/send.mail.utils");
 const { confirm, abort } = require("../../utils/emails/confirmReservation");
 const Users = require("../../models/Users");
 const CONTROLLER_RESERVATION = require("../../controllers/v2/reservation");
-const { handleHttpError } = require("../../middlewares/handleError");
+const { handleHttpError, handleErrorResponseV2 } = require("../../middlewares/handleError");
 const http = require("../../utils/http.msg");
 
 RouterReservation.route("/reservation/:id").patch(isAtLeastCounter, async (req, res) => {
@@ -76,7 +76,20 @@ RouterReservation.route("/event/:idEvent/kitdelivered").patch(
     try {
       const { user } = req.query
       const { idEvent } = req.params
-      const dataUser = (await Users.findOne({ where: { dni_user: user } })).toJSON();
+      
+      // Buscamos si el usuario existe
+      const existsUser = await Users.findOne({
+        where: { dni_user: user },
+        attributes: ["id_user", "name_user", "lastname_user", "email_user"],
+      });
+
+      // Verificamos si existe el usuario
+      if (!existsUser) {
+        return handleErrorResponseV2(res, "El usuario no existe", 404);
+      }
+
+      const dataUser = existsUser.dataValues;
+
       //console.log(dataUser)
       const reservation = (await Reservation.findOne({
         where: {
@@ -99,6 +112,7 @@ RouterReservation.route("/event/:idEvent/kitdelivered").patch(
 
     }
     catch (error) {
+      console.log(error);
       res.status(500).send(http["500"]);
     }
 

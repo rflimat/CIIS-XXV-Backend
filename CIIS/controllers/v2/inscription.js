@@ -10,7 +10,6 @@ const TypeAttendee = require("../../models/TypeAttendee");
 
 const CONTROLLER_INSCRIPTION = {};
 
-
 const registers = {
   publicogeneral: (req, res) => {
     if (!req.files || Object.keys(req.files).length === 0) {
@@ -361,6 +360,15 @@ const registersPostmaster = {
 
 CONTROLLER_INSCRIPTION.POST = (req, res) => {
   const { type_attend, type_event } = req.query;
+
+  if (!Boolean(req.user.dni)) {
+    return res.status(404).send({
+      error: "DNI no proporcionado",
+      code: "404",
+      reason: "Debe proporcionar su numero de DNI en la opción Cuenta para continuar con el proceso de inscripción"
+    });
+  }
+
   //type_attend (planes: estudiantesciis,egresado), type_event (ciis o postmaster)
   Reservation.findOne({
     where: { user_id: req.user.id, event_id: req.params.event },
